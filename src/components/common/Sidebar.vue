@@ -58,19 +58,29 @@ export default {
             items: [
                 {
                     icon: 'el-icon-lx-home',
-                    index: 'dashboard',
-                    title: '系统首页'
+                    index: 'homepage',
+                    title: '首页'
                 },
-                                {
+                {
                     icon: 'el-icon-lx-cascades',
-                    index: 'allCar',
-                    title: '车辆汇总信息'
+                    index: 'processingOrdersSum',
+                    title: '执行中订单汇总'
                 },
-                                {
-                    icon: 'el-icon-s-check',
-                    index: 'driverCheck',
-                    title: '司机注册审核'
+                {
+                    icon: 'el-icon-lx-cascades',
+                    index: 'errorOrdersSum',
+                    title: '异常订单汇总'
                 },
+                {
+                    icon: 'el-icon-lx-cascades',
+                    index: 'processedOrdersSum',
+                    title: '历史订单汇总'
+                },
+                // {
+                //     icon: 'el-icon-s-check',
+                //     index: 'driverCheck',
+                //     title: '司机注册审核'
+                // },
                 // {
                 //     icon: 'el-icon-lx-cascades',
                 //     index: 'table',

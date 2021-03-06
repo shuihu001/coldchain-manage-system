@@ -23,19 +23,34 @@ export default new Router({
             meta: { title: '自述文件' },
             children: [
                 {
-                    path: '/dashboard',
-                    component: () => import(/* webpackChunkName: "dashboard" */ '../components/page/Dashboard.vue'),
-                    meta: { title: '系统首页' }
+                    path: '/homepage',
+                    component: () => import('../views/homePage.vue'),
+                    meta: { title: '首页' }
                 },
                 {
-                    path: '/allCar',
-                    component: () => import(/* webpackChunkName: "table" */ '../components/page/BaseTable.vue'),
-                    meta: { title: '车辆汇总' }
+                    path: '/processingOrdersSum',
+                    component: () => import('../views/processingOrders/processingOrdersSum.vue'),
+                    meta: { title: '执行中订单汇总' }
                 },
                 {
-                    path: '/driverCheck',
-                    component: () => import(/* webpackChunkName: "table" */ '../views/driverCheck.vue'),
-                    meta: { title: '司机注册审核' }
+                    path: '/errorOrdersSum',
+                    component: () => import('../views/errorOrders/errorOrdersSum.vue'),
+                    meta: { title: '异常订单汇总' }
+                },
+                {
+                    path: '/processedOrdersSum',
+                    component: () => import('../views/processedOrders/processedOrdersSum.vue'),
+                    meta: { title: '历史订单汇总' }
+                },
+                // {
+                //     path: '/driverCheck',
+                //     component: () => import(/* webpackChunkName: "table" */ '../views/driverCheck.vue'),
+                //     meta: { title: '司机注册审核' }
+                // },
+                {
+                    path: '/404',
+                    component: () => import(/* webpackChunkName: "404" */ '../components/common/404.vue'),
+                    meta: { title: '404' }
                 },
             ]
             //     {
@@ -106,11 +121,11 @@ export default new Router({
             //         component: () => import(/* webpackChunkName: "permission" */ '../components/page/Permission.vue'),
             //         meta: { title: '权限测试', permission: true }
             //     },
-            //     {
-            //         path: '/404',
-            //         component: () => import(/* webpackChunkName: "404" */ '../components/page/404.vue'),
-            //         meta: { title: '404' }
-            //     },
+                // {
+                //     path: '/404',
+                //     component: () => import(/* webpackChunkName: "404" */ '../components/page/404.vue'),
+                //     meta: { title: '404' }
+                // },
             //     {
             //         path: '/403',
             //         component: () => import(/* webpackChunkName: "403" */ '../components/page/403.vue'),
