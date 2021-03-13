@@ -33,14 +33,34 @@ export default new Router({
                     meta: { title: '执行中订单汇总' }
                 },
                 {
+                    path: '/processingOrdersDetail',
+                    component: () => import('../views/processingOrders/processingOrdersDetail.vue'),
+                    meta: { title: '订单详情' }
+                },
+                {
+                    path: '/goodVideo',
+                    component: () => import('../views/processingOrders/goodVideo.vue'),
+                    meta: { title: '订单监控详情' }
+                },
+                {
                     path: '/errorOrdersSum',
                     component: () => import('../views/errorOrders/errorOrdersSum.vue'),
                     meta: { title: '异常订单汇总' }
                 },
                 {
+                    path: '/errorOrdersDetail',
+                    component: () => import('../views/errorOrders/errorOrdersDetail.vue'),
+                    meta: { title: '异常订单详情' }
+                },
+                {
                     path: '/processedOrdersSum',
                     component: () => import('../views/processedOrders/processedOrdersSum.vue'),
                     meta: { title: '历史订单汇总' }
+                },
+                {
+                    path: '/processedOrdersDetail',
+                    component: () => import('../views/processedOrders/processedOrdersDetail.vue'),
+                    meta: { title: '历史订单详情' }
                 },
                 // {
                 //     path: '/driverCheck',
