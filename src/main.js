@@ -10,6 +10,14 @@ import './assets/css/icon.css';
 import './components/common/directives';
 import 'babel-polyfill';
 
+import VueVideoPlayer from 'vue-video-player'
+
+// require videojs style
+import 'video.js/dist/video-js.css'
+Vue.use(VueVideoPlayer, /* {
+    options: global default options,
+    events: global videojs events
+  } */)
 Vue.config.productionTip = false;
 Vue.use(VueI18n);
 Vue.use(ElementUI, {

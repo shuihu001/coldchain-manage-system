@@ -1,0 +1,34 @@
+{
+    "list": [
+        {
+            "orderNum":"xx123545",
+            "creatTime":"2020.12.12",
+            "startPlace":"江西上饶",
+            "endPlace":"北京邮电大学",
+            "licenseNum":"赣12345",
+            "driverName":"张三",
+            "phoneNum":13051578190,
+            "abnormal": 0,
+            "finished":true
+        },
+        {
+            "orderNum":"xx123546",
+            "creatTime":"2020.12.13",
+            "startPlace":"福建",
+            "endPlace":"北京邮电大学",
+            "licenseNum":"闵12345",
+            "driverName":"李四",
+            "phoneNum":13051578190
+        },
+        {
+            "orderNum":"xx123547",
+            "creatTime":"2020.12.14",
+            "startPlace":"上海",
+            "endPlace":"北京邮电大学",
+            "licenseNum":"沪12345",
+            "driverName":"王五",
+            "phoneNum":13051578190
+        }
+    ],
+    "pageTotal": 3
+}
