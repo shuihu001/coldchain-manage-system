@@ -107,9 +107,9 @@ export default {
     // 获取 easy-mock 的模拟数据
     getData() {
       fetchData().then(res => {
-        console.log(res.list[0].pos);
-        for (let n = 0; n < res.list.length; n++) {
-          Vue.set(this.pos,n, res.list[n].pos);
+        console.log(res.list2[0].pos);
+        for (let n = 0; n < res.list2.length; n++) {
+          Vue.set(this.pos,n, res.list2[n].pos);
           console.log(this.pos);
         }
       }).catch(err =>{
