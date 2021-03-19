@@ -1,9 +1,12 @@
-module.exports = {
+ module.exports = {
     baseUrl: './',
     assetsDir: 'static',
     productionSourceMap: false,
     configureWebpack: {
-		resolve: {
+		externals: {
+		  AMap: "window.AMap"
+ },
+      resolve: {
 			alias: {
 				'assets': '@/assets',
 				'common': '@/common',
