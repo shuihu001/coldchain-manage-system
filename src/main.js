@@ -13,14 +13,14 @@ import 'babel-polyfill';
 import echarts from 'echarts'; // 引入echarts
 
 
-import VueVideoPlayer from 'vue-video-player'
+// import VueVideoPlayer from 'vue-video-player'
 
 // require videojs style
-import 'video.js/dist/video-js.css'
-Vue.use(VueVideoPlayer, /* {
-    options: global default options,
-    events: global videojs events
-  } */)
+// import 'video.js/dist/video-js.css'
+// Vue.use(VueVideoPlayer, /* {
+//     options: global default options,
+//     events: global videojs events
+//   } */)
 
 Vue.prototype.$echarts = echarts; //在vue中设置Echart
 Vue.config.productionTip = false;

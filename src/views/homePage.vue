@@ -2,12 +2,12 @@
 <template>
   <div>
     <el-row :gutter="20">
-      <el-col :span="8">
+      <el-col :span="9">
         <el-card shadow="hover" class="mgb20" style="height:470px;">
           <schart ref="ring" class="schartpie" canvasId="ring" :options="options1"></schart>
         </el-card>
       </el-col>
-      <el-col :span="16">
+      <el-col :span="15">
         <el-card shadow="hover" id="container" class="mgb20" style="height:470px;">
         </el-card>
       </el-col>
@@ -33,7 +33,7 @@
 import echarts from 'echarts'
 import Schart from 'vue-schart';
 import AMap from 'AMap'
-import { fetchData } from '../api/index'
+import {errData, fetchData} from '../api/index'
 import Vue from 'vue'
 
 export default {
@@ -41,6 +41,13 @@ export default {
   data() {
     return {
       pos: [],
+      temp: [],
+      errSum: [0,0,0],
+      normalSum: 0,
+      errDays: [0,0,0,0,0,0,0],
+      normalDays: [0,0,0,0,0,0,0],
+      errMonths: [0,0,0,0,0,0],
+      normalMonths:[0,0,0,0,0,0],
       siteInfo:[
         [{keyword:'河北省图书馆', city:'石家庄'},{keyword:'大兴机场', city:'北京'}],
         [{keyword: '内蒙古博物馆',city: '呼和浩特'},{keyword:'八达岭奥特莱斯',city:'北京'}],
@@ -52,28 +59,80 @@ export default {
         title: {
           text: '异常订单数量和种类占比'
         },
-        labels: ['开关门异常', '温湿度异常'],
-        datasets: [
-          {
-            data: [234, 27]
-          }
-        ]
+        labels: ['温度异常','湿度异常','开关门异常'],
+        datasets: [{
+            data: [],
+          }]
       },
       options2: {
-        type: 'bar',
         title: {
-          text: '近7日订单数量统计'
+          text: '近7日订单数量统计',
+          x: 'center',
+          textStyle: {
+            color: '#666',
+          },
         },
-        xRorate: 25,
-        labels: ['3.06', '3.07', '3.08', '3.09', '3.10', '3.11', '3.12'],
-        datasets: [
+        color: ["#4a90e2", '#f5a623'],
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: {            // 坐标轴指示器，坐标轴触发有效
+            type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+          }
+        },
+        legend: {
+          top: '10%',
+          data: ['正常订单', '异常订单'],
+          textStyle: {
+            fontSize: '12'
+          }
+        },
+        grid: {
+          left: '3%',
+          right: '4%',
+          bottom: '3%',
+          containLabel: true
+        },
+        xAxis: [
           {
-            label: '正常订单',
-            data: [234, 278, 270, 190, 230, 112, 113]
+            type: 'category',
+            data: [],
+            axisLabel: {
+              textStyle: {
+                fontSize: '12'
+              }
+            },
+            axisTick :{
+              show: false,
+            },
+          }
+        ],
+        yAxis: [
+          {
+            type: 'value',
+            axisTick :{
+              show: false,
+            },
+            axisLabel: {
+              textStyle: {
+                fontSize: '12'
+              }
+            },
+          }
+        ],
+        series: [
+          {
+            name: '正常订单',
+            type: 'bar',
+            stack: '数量',
+            data: [],
+            barWidth: 30
           },
           {
-            label: '异常订单',
-            data: [44, 84, 40, 45, 40, 14, 42]
+            name: '异常订单',
+            type: 'bar',
+            stack: '数量',
+            data: [],
+            barWidth: 30
           }
         ]
       },
@@ -82,15 +141,15 @@ export default {
         title: {
           text: '近6月订单数量统计'
         },
-        labels: ['9月', '10月', '11月', '12月', '1月', '2月'],
+        labels: [],
         datasets: [
           {
             label: '正常订单',
-            data: [234, 278, 270, 190, 230, 190]
+            data: []
           },
           {
             label: '异常订单',
-            data: [164, 178, 150, 135, 160, 150]
+            data: []
           }
         ]
       }
@@ -100,28 +159,124 @@ export default {
     Schart
   },
   created() {
+    this.getXlable();
     this.getData();
-    console.log(this.pos);
+    // console.log(this.pos);
   },
   methods: {
-    // 获取 easy-mock 的模拟数据
+    getXlable() {
+      //7days
+      for (let j = 0; j < 7 ; j++) {
+        this.options2.xAxis[0].data[j] = this.addDays(j-6).cdate;
+      }
+      //6months
+      for (let i = 0; i < 6; i++) {
+        this.options3.labels[i] = this.addMonths(i-5).cmonth;
+      }
+    },
+
     getData() {
-      fetchData().then(res => {
-        console.log(res.list2[0].pos);
-        for (let n = 0; n < res.list2.length; n++) {
-          Vue.set(this.pos,n, res.list2[n].pos);
+      //map
+      fetchData(5).then(res => {
+        console.log(res);
+        for (let n = 0; n < res.data.length; n++) {
+          Vue.set(this.pos,n, res.data[n].pos);
           console.log(this.pos);
         }
-      }).catch(err =>{
-        console.log(err);
-      });
+      })
+      fetchData(5).then(res => {
+        console.log(res.data);
+        this.temp = res.data;
+        for (let m = 0; m < this.temp.length; m++) {
+          let yt1 = new Date(this.temp[m].updateTime).getFullYear();
+          let mt1 = (new Date(this.temp[m].updateTime).getMonth())+1;
+          let dt1 = new Date(this.temp[m].updateTime).getDate();
+          if (this.temp[m].alert == 0){
+            this.normalSum += 1;
+            for (let i = 0; i < 6; i++) {
+              let yt2 = this.addMonths(i-5).year;
+              let mt2 = this.addMonths(i-5).mmonth;
+              if(yt1 == yt2 && mt1 == mt2 ){
+                this.normalMonths[i] += 1;
+              }
+            }
+            for (let j = 0; j < 7; j++) {
+              let yyt2 = this.addDays(j-6).y;
+              let mmt2 = this.addDays(j-6).mm;
+              let ddt2 = this.addDays(j-6).dd;
+              if(yt1 == yyt2 && mt1 == mmt2 && dt1 == ddt2){
+                this.normalDays[j] += 1;
+              }
+            }
+          }else{
+            for (let i = 0; i < 6; i++) {
+              let yt2 = this.addMonths(i-5).year;
+              let mt2 = this.addMonths(i-5).mmonth;
+              if(yt1 == yt2 && mt1 == mt2 ){
+                this.errMonths[i] += 1;
+              }
+            }
+            for (let j = 0; j < 7; j++) {
+              let yyt2 = this.addDays(j-6).y;
+              let mmt2 = this.addDays(j-6).mm;
+              let ddt2 = this.addDays(j-6).dd;
+              if(yt1 == yyt2 && mt1 == mmt2 && dt1 == ddt2){
+                this.errDays[j] += 1;
+              }
+            }
+            if (this.temp[m].alert == 1){
+              this.errSum[0] += 1;
+            }else if (this.temp[m].alert == 2){
+              this.errSum[1] += 1;
+            }else if (this.temp[m].alert == 3){
+              this.errSum[2] += 1;
+            }
+          }
+        }
+        this.options1.datasets[0].data = this.errSum;
+        this.options2.series[0].data = this.normalDays;
+        this.options2.series[1].data = this.errDays;
+        this.options3.datasets[0].data = this.normalMonths;
+        this.options3.datasets[1].data = this.errMonths;
+        console.log(this.options2.series[0].data);
+        console.log(this.options2.series[1].data);
+      })
     },
-    changeDate() {
-      const now = new Date().getTime();
-      this.data.forEach((item, index) => {
-        const date = new Date(now - (6 - index) * 86400000);
-        item.name = `${date.getFullYear()}/${date.getMonth() + 1}/${date.getDate()}`;
-      });
+
+    addMonths(monthNum) {
+      let nm = new Date();
+      let year = nm.getFullYear();
+      let month = nm.getMonth()+1;
+      month = month + monthNum;
+      if (month > 12) {
+        while (month > 12) {
+          year++;
+          month -= 12;
+        }} else if (month <= 0) {
+        while (month <= 0) {
+          year--;
+          month += 12;
+        }}
+      let mmonth = month;
+      month = month < 10 ? "0" + month : month;
+      let cmonth = year + "-" + month;
+      return {cmonth,year,mmonth};
+    },
+
+    addDays(days){
+      let nd = new Date();
+      nd = nd.valueOf();
+      nd = nd + days * 24 * 60 * 60 * 1000;
+      nd = new Date(nd);
+      let y = nd.getFullYear();
+      let m = nd.getMonth()+1;
+      let d = nd.getDate();
+      let mm = m;
+      let dd = d;
+      if(m <= 9) m = "0"+m;
+      if(d <= 9) d = "0"+d;
+      let cdate = m +"-"+d;
+      return {cdate,y,mm,dd};
     },
     drawMap() {
       const mapDemo = new AMap.Map('container');
@@ -164,138 +319,18 @@ export default {
     },
     drawLine() {
       this.myStack = echarts.init(document.getElementById('stack'))
-      this.myStack.setOption({
-        title: {
-          text: '近7日订单数量统计',
-          x: 'center',
-          textStyle: {
-            color: '#666',
-          },
-        },
-        color: ["#4a90e2", '#f5a623'],
-        tooltip: {
-          trigger: 'axis',
-          axisPointer: {            // 坐标轴指示器，坐标轴触发有效
-            type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
-          }
-        },
-        legend: {
-          top: '10%',
-          data: ['正常订单', '异常订单'],
-          textStyle: {
-            fontSize: '12'
-          }
-        },
-        grid: {
-          left: '3%',
-          right: '4%',
-          bottom: '3%',
-          containLabel: true
-        },
-        xAxis: [
-          {
-            type: 'category',
-            data: ['3/10', '3/11', '3/12', '3/13', '3/14', '3/15', '3/16'],
-            axisLabel: {
-              textStyle: {
-                fontSize: '12'
-              }
-            },
-            axisTick :{
-              show: false,
-            },
-          }
-        ],
-        yAxis: [
-          {
-            type: 'value',
-            axisTick :{
-              show: false,
-            },
-            axisLabel: {
-              textStyle: {
-                fontSize: '12'
-              }
-            },
-          }
-        ],
-        series: [
-          {
-            name: '正常订单',
-            type: 'bar',
-            stack: '数量',
-            data: [220, 182, 191, 234, 290, 123, 456],
-            barWidth: 30
-          },
-          {
-            name: '异常订单',
-            type: 'bar',
-            stack: '数量',
-            data: [12, 13, 1, 34, 9, 10, 12],
-            barWidth: 30
-          },
-        ]
-
-      });
+      this.myStack.setOption(this.options2);
     }
-    // handleListener() {
-    //     bus.$on('collapse', this.handleBus);
-    //     // 调用renderChart方法对图表进行重新渲染
-    //     window.addEventListener('resize', this.renderChart);
-    // },
-    // handleBus(msg) {
-    //     setTimeout(() => {
-    //         this.renderChart();
-    //     }, 200);
-    // },
-    // renderChart() {
-    //     this.$refs.bar.renderChart();
-    //     this.$refs.line.renderChart();
-    // }
   },
   mounted() {
     setTimeout(() =>{
+      this.drawLine()
       this.drawMap()
     },500)
-    // this.drawMap()
-    this.drawLine()
+    // this.drawLine()
 
   }
 };
-
-// export default {
-// //import引入的组件需要注入到对象中才能使用
-// components: {},
-// data() {
-// //这里存放数据
-// return {
-//
-// };
-// },
-// //监听属性 类似于data概念
-// computed: {},
-// //监控data中的数据变化
-// watch: {},
-// //方法集合
-// methods: {
-//
-// },
-// //生命周期 - 创建完成（可以访问当前this实例）
-// created() {
-//
-// },
-// //生命周期 - 挂载完成（可以访问DOM元素）
-// mounted() {
-//
-// },
-// beforeCreate() {}, //生命周期 - 创建之前
-// beforeMount() {}, //生命周期 - 挂载之前
-// beforeUpdate() {}, //生命周期 - 更新之前
-// updated() {}, //生命周期 - 更新之后
-// beforeDestroy() {}, //生命周期 - 销毁之前
-// destroyed() {}, //生命周期 - 销毁完成
-// activated() {}, //如果页面有keep-alive缓存功能，这个函数会触发
-// }
 
 </script>
 <style lang='scss' scoped>
