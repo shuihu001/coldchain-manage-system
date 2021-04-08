@@ -34,8 +34,9 @@ export default new Router({
                 },
                 {
                     path: '/processingOrdersDetail',
+                    // path: '/processingOrdersDetail',
                     component: () => import('../views/processingOrders/processingOrdersDetail.vue'),
-                    meta: { title: '订单详情' }
+                    meta: { title: '执行中订单详情' }
                 },
                 {
                     path: '/goodVideo',

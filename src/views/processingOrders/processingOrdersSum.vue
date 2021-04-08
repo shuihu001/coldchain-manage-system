@@ -12,8 +12,15 @@
                 <el-input v-model="query.name" placeholder="请输入始发地或目的地或运单号进行查询" class="handle-input mr10"></el-input>
                 <el-button type="primary" icon="el-icon-search" @click="handleSearch">搜索</el-button>
             </div>
-            <one-order  v-for="oneOrder in tableData" :one-order="oneOrder" :key="oneOrder.orderNum"></one-order>
 
+            <one-order
+              v-for="oneOrder in orderData"
+              :one-order="oneOrder"
+              :key="oneOrder.id"
+              @detailSearch = "detailSearch(oneOrder)"
+            >
+            </one-order>
+<!--            <one-order  v-for="oneOrder in orderData" :order-data="orderData" :key="orderData.id"></one-order>-->
             <!-- 分页 -->
             <!-- <div class="pagination">
                 <el-pagination
@@ -31,16 +38,17 @@
 
 <script>
 import oneOrder from '../../components/content/oneOrder'
-
-import { fetchData } from '../../api/index';
+import processingItem from "./processingItem";
+import { getOrders,getDriver } from '../../network/requestDatas';
 export default {
-    name: 'basetable',
+    name: 'processingOrderSum',
     data() {
         return {
             query: {
                 orderNum:'',
                 pageIndex: 1,
-                pageSize: 1
+                pageSize: 1,
+                name:''
             },
             tableData: [],
             multipleSelection: [],
@@ -49,33 +57,67 @@ export default {
             pageTotal: 0,
             form: {},
             idx: -1,
-            id: -1
+            id: -1,
+          orderData:[],
+          driverInfo:[]
         };
     },
     components: {
-        'one-order': oneOrder
+        'one-order': oneOrder,
+      processingItem
     },
     created() {
-        this.getData();
+        // this.getData();
+        this.getOrderData(3)
+      // this.getDriverInfo()
     },
     methods: {
-        detailSearch() {
+        detailSearch(order) {
             // 需要添加判断逻辑，觉得跳转页面的路径
-            // this.$router.push('/processingOrdersDetail')
-            this.$router.push('/goodVIdeo')
+            this.$router.push({
+              path:'/processingOrdersDetail',
+              query:{
+                order:order
+              }
+            })
+          // console.log("点击了");
+          // console.log(this.orderData[0].id);
+          // this.$router.push('/processingOrdersDetail'+this.orderData[0].id)
+          // this.$router.push('/processingOrdersDetail')
         },
         // 获取 easy-mock 的模拟数据
-        getData() {
-            fetchData(this.query).then(res => {
-                console.log(res);
-                this.tableData = res.list;
-                this.pageTotal = res.pageTotal || 50;
-            });
+        // getData() {
+        //     fetchData(this.query).then(res => {
+        //         console.log(res);
+        //         this.tableData = res.list;
+        //         this.pageTotal = res.pageTotal || 50;
+        //     });
+        // },
+        getOrderData(completeState){
+          getOrders(completeState).then(res =>{
+            this.orderData = res.data;
+            // this.orderData.push(...res.data)
+            // console.log(this.orderData);
+            if (this.query.name !== '') {
+              this.orderData = this.orderData.filter(item => item.id.toString().match(this.query.name) || item.starting.match(this.query.name) || item.destination.match(this.query.name));
+              console.log(this.orderData);
+            }
+          }).catch(err => {
+            console.log(err);
+          })
+        },
+        getDriverInfo(){
+          getDriver().then(res => {
+            console.log(res);
+            this.driverInfo.push(...res.data)
+          }).catch(err => {
+            console.log(err);
+          })
         },
         // 触发搜索按钮
         handleSearch() {
-            this.$set(this.query, 'pageIndex', 1);
-            this.getData();
+            // this.$set(this.query, 'pageIndex', 1);
+            this.getOrderData(1);
         },
         // 删除操作
         handleDelete(index, row) {

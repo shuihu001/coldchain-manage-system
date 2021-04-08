@@ -1,11 +1,13 @@
 <template>
   <div id="charts">
-    <div id="line-charts"></div>
+    <div id="line-charts">
+
+    </div>
   </div>
 </template>
 
 <script>
-import echarts from "echarts"
+import  echarts  from "echarts"
 export default {
   name: "lineCharts",
   data(){

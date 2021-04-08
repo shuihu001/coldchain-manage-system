@@ -15,6 +15,8 @@ import echarts from 'echarts'; // 引入echarts
 
 // import VueVideoPlayer from 'vue-video-player'
 
+// import Echarts from 'echarts'
+// Vue.use(Echarts)
 // require videojs style
 // import 'video.js/dist/video-js.css'
 // Vue.use(VueVideoPlayer, /* {

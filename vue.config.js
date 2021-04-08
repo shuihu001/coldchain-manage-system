@@ -3,10 +3,10 @@
     assetsDir: 'static',
     productionSourceMap: false,
     configureWebpack: {
-		externals: {
-		  AMap: "window.AMap"
- },
-      resolve: {
+      externals:{
+        AMap: "window.AMap"
+      },
+		  resolve: {
 			alias: {
 				'assets': '@/assets',
 				'common': '@/common',
@@ -15,16 +15,16 @@
 				'views': '@/views ',
 			}
 		}
-	}
-    // devServer: {
-    //     proxy: {
-    //         '/api':{
-    //             target:'http://jsonplaceholder.typicode.com',
-    //             changeOrigin:true,
-    //             pathRewrite:{
-    //                 '/api':''
-    //             }
-    //         }
-    //     }
-    // }
+	},
+    devServer: {
+        // proxy: {
+        //     '/api':{
+        //         target:'http://jsonplaceholder.typicode.com',
+        //         changeOrigin:true,
+        //         pathRewrite:{
+        //             '/api':''
+        //         }
+        //     }
+        // }
+    }
 }

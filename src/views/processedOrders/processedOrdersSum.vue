@@ -12,23 +12,34 @@
                 <el-input v-model="query.name" placeholder="请输入始发地或目的地或运单号进行查询" class="handle-input mr10"></el-input>
                 <el-button type="primary" icon="el-icon-search" @click="handleSearch">搜索</el-button>
             </div>
-            <one-order  v-for="oneOrder in tableData" :one-order="oneOrder" :key="oneOrder.orderNum"></one-order>
+<!--            <processed-item></processed-item>-->
+<!--          <processed-item v-for="order in orderData" :order-data="order" :key="order.id"></processed-item>-->
+          <one-order
+            v-for="oneOrder in orderData"
+            :one-order="oneOrder"
+            :key="oneOrder.id"
+            @detailSearch = "detailSearch(oneOrder)"
+          >
+          </one-order>
         </div>
     </div>
 </template>
 
 <script>
 import oneOrder from '../../components/content/oneOrder'
+import processedItem from "./processedItem";
+// import { fetchData ,getOrders,getDriver} from '../../api/index';
+import { getOrders, getDriver } from "../../network/requestDatas";
 
-import { fetchData } from '../../api/index';
 export default {
-    name: 'basetable',
+    name: 'processedOrdersSum',
     data() {
         return {
             query: {
                 orderNum:'',
                 pageIndex: 1,
-                pageSize: 1
+                pageSize: 1,
+                name:''
             },
             tableData: [],
             multipleSelection: [],
@@ -37,18 +48,29 @@ export default {
             pageTotal: 0,
             form: {},
             idx: -1,
-            id: -1
+            id: -1,
+          orderData:[],
+          driverInfo:[]
         };
     },
     components: {
-        'one-order': oneOrder
+        'one-order': oneOrder,
+      processedItem
     },
     created() {
-        this.getData();
+        // this.getData();
+      this.getProcessedOrderData(5)
+      // this.getDriverInfo()
     },
     methods: {
-        detailSearch() {
-            this.$router.push('/processedOrdersDetail')
+        detailSearch(order) {
+            this.$router.push({
+              path:'/processedOrdersDetail',
+              query:{
+                order:order
+              }
+            })
+          // this.$router.push('/processedOrdersDetail'+this.orderData[0].id)
         },
         // 获取 easy-mock 的模拟数据
         getData() {
@@ -56,12 +78,46 @@ export default {
                 console.log(res);
                 this.tableData = res.list;
                 this.pageTotal = res.pageTotal || 50;
+            }).catch(err =>{
+              console.log(err);
             });
         },
+
+      // getData() {
+      //   fetchData(this.query).then(res => {
+      //     this.tableData = res.list;
+      //
+      //   });
+      // },
+
+      getProcessedOrderData(completeState){
+        getOrders(completeState).then(res =>{
+          for(let order of res.data){
+            if(order.alert == 0){
+              this.orderData.push(order)
+            }
+          }
+          console.log(res.data);
+          // this.orderData = res.data;
+          // this.orderData.push(...res.data)
+          if (this.query.name !== ''){
+            this.orderData = this.orderData.filter(item => item.id.toString().match(this.query.name) || item.starting.match(this.query.name) || item.destination.match(this.query.name));
+          }
+          console.log(this.orderData[0]);
+        }).catch()
+      },
+      getDriverInfo(){
+        getDriver().then(res => {
+          console.log(res.data);
+          this.driverInfo.push(...res.data)
+        }).catch(err => {
+          console.log(err);
+        })
+      },
         // 触发搜索按钮
         handleSearch() {
-            this.$set(this.query, 'pageIndex', 1);
-            this.getData();
+            // this.$set(this.query, 'pageIndex', 1);
+            this.getOrderData(5);
         },
         // 删除操作
         handleDelete(index, row) {
