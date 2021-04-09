@@ -71,17 +71,10 @@
         },
       }
     },
-    destroyed() {
-      console.log("破坏了");
-    },
     created() {
       this.orderData = this.$route.query.order
-      console.log(this.orderData.id);
       this.getDriverInfo()
       this.getCarStateData(this.orderData.id)
-    },
-    activated(){
-
     },
     mounted() {
 
@@ -108,6 +101,7 @@
         getCarState(orderId).then(res => {
           console.log(res.data);
           this.carPosition = []
+          this.createTime = []
           for(let index in this.temperatures){
             this.temperatures[index] = []
           }
@@ -119,7 +113,7 @@
             this.$set(point,0,state.longitude)
             this.$set(point,1,state.latitude)
             this.carPosition.push(point)
-            this.createTime.push(state.createTime)
+            this.createTime.push(state.createTime.slice(11))
             this.temperatures.temperature1.push(state.temperature1)
             this.temperatures.temperature2.push(state.temperature2)
             this.temperatures.temperature3.push(state.temperature3)
@@ -135,10 +129,10 @@
             this.humidity.humidity6.push(state.humidity6)
             this.humidity.humidity7.push(state.humidity7)
           }
-          console.log(this.carPosition);
-          // console.log(this.createTime);
-          console.log(this.temperatures);
-          console.log(this.humidity);
+          // console.log(this.carPosition);
+          console.log(this.createTime);
+          // console.log(this.temperatures);
+          // console.log(this.humidity);
         })
       }
     }

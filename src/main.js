@@ -14,6 +14,19 @@ import echarts from 'echarts'; // 引入echarts
 
 
 // import VueVideoPlayer from 'vue-video-player'
+// import VideoPlayer from 'vue-video-player'
+// Vue.use(VideoPlayer)
+// require('vue-video-player/src/custom-theme.css')
+
+import VueVideoPlayer from 'vue-video-player'
+// import Echarts from 'echarts'
+// Vue.use(Echarts)
+// require videojs style
+import 'video.js/dist/video-js.css'
+Vue.use(VueVideoPlayer, /* {
+    options: global default options,
+    events: global videojs events
+  } */)
 
 // import Echarts from 'echarts'
 // Vue.use(Echarts)

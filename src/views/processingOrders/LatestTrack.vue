@@ -26,7 +26,7 @@
     methods:{
       drawLine(){
         const mapDemo = new AMap.Map('container',{
-          center: [117.573092, 36.682101],
+          // center: [117.573092, 36.682101],
           zoom:13
         })
         mapDemo.setMapStyle('amap://styles/macaron')
@@ -37,14 +37,10 @@
           let polyLine = new AMap.Polyline({
             path:pathPoints,
             isOutline:false,
-            // outlineColor: '#ffeeff',
-            // borderWeight:3,
             strokeColor: "#3366FF",
             strokeOpacity: 1,
             strokeWeight: 5,
-            // 折线样式还支持 'dashed'
             strokeStyle: "solid",
-            // strokeStyle是dashed时有效
             strokeDasharray: [10, 5],
             lineJoin: 'round',
             lineCap: 'round',
@@ -55,7 +51,6 @@
           this.oldPoint[0] = this.latestPoint[0]
           this.oldPoint[1] = this.latestPoint[1]
         },5000)
-
         }
       }
   }

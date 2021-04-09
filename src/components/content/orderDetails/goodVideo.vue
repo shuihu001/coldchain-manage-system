@@ -1,13 +1,11 @@
 <template>
-  <div>
-    <div>
-      <video-player
+  <div class="video">
+    <video-player
         class="video-player vjs-custom-skin"
         ref="videoPlayer"
         :playsline="false"
-        :options="playerOptions"></video-player>
-<!--      <p>{{'视频' + i}}</p>-->
-    </div>
+        :options="playerOptions">
+    </video-player>
   </div>
 </template>
 
@@ -50,6 +48,10 @@
 </script>
 
 <style scoped>
+  .video{
+    width: 100%;
+    height: 100%;
+  }
   .video-js .vjs-icon-placeholder {
     width: 80%;
     height: 100%;

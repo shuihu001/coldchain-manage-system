@@ -53,22 +53,23 @@
       }
     },
     created(){
-      // this.carPosition = [118,32]
       this.orderData = this.$route.query.order
-      // console.log(this.$route);
-    },
-    mounted() {
       this.getDriverInfo()
       setInterval(() => {
         this.getCarStateData(this.orderData.id)
-      },10*5000)
+      },60*1000)
+    },
+    mounted() {
+
     },
     watch:{
       '$route'(to,from){
-        if(this.$route.query.order !== undefined && this.$route.query.order !== "[object Object"){
+        if(this.$route.query.order !== undefined && this.$route.query.order !== "[object Object]"){
           this.orderData = this.$route.query.order
-          console.log(this.orderData);
-          // console.log(this.$route);
+          this.getDriverInfo()
+          setInterval(() => {
+            this.getCarStateData(this.orderData.id)
+          },60*1000)
           this.$forceUpdate()
         }
       }

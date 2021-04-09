@@ -25,14 +25,15 @@
       }
     },
     watch:{
-      humidity(newValue){
-        console.log(this.humidity);
-        console.log(newValue);
-        console.log("湿度变了");
-        this.drawLine()
-      },
+      // humidity(newValue){
+      //   console.log(this.humidity);
+      //   console.log(newValue);
+      //   console.log("湿度变了");
+      //   this.drawLine()
+      // },
       createTime(){
         console.log("时间变了");
+        this.drawLine()
       }
     },
     mounted() {

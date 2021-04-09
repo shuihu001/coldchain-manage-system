@@ -74,19 +74,20 @@
     },
     created() {
       this.orderData = this.$route.query.order
-
-    },
-    mounted() {
       this.getDriverInfo()
       this.getCarStateData(this.orderData.id)
       this.getErrorPoints()
+    },
+    mounted() {
+
     },
     watch:{
       '$route'(to,from){
         if(this.$route.query.order !== undefined && this.$route.query.order !== "[object Object"){
           this.orderData = this.$route.query.order
-          console.log(this.orderData);
-          // console.log(this.$route);
+          this.getDriverInfo()
+          this.getCarStateData(this.orderData.id)
+          this.getErrorPoints()
           this.$forceUpdate()
         }
       }
@@ -101,6 +102,16 @@
       },
       getCarStateData(orderId){
         getCarState(orderId).then( res => {
+          console.log(res.data);
+          this.carPosition = []
+          // this.errorPoints = []
+          this.createTime = []
+          for(let index in this.temperatures){
+            this.temperatures[index] = []
+          }
+          for(let index in this.humidity){
+            this.humidity[index] = []
+          }
           for(let state in res.data){
             let point = []
             Vue.set(point,0,state.longitude)
@@ -126,6 +137,7 @@
       },
       getErrorPoints(){
         getErrorOrderData().then(res => {
+          this.errorPoints = []
           for(let record in res.data){
             let point = []
             Vue.set(point,0,record.longitude)
