@@ -117,7 +117,7 @@ export default {
         // 触发搜索按钮
         handleSearch() {
             // this.$set(this.query, 'pageIndex', 1);
-            this.getOrderData(5);
+            this.getProcessedOrderData(5);
         },
         // 删除操作
         handleDelete(index, row) {
