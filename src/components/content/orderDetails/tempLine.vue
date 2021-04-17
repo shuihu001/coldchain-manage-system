@@ -6,6 +6,7 @@
 
 <script>
   import * as echarts  from "echarts"
+  import bus from "../../common/bus";
   export default {
     name: "tempLine",
     props:{
@@ -22,15 +23,23 @@
     data(){
       return {
         // tempData:[]
+        collapse:'',
+        myChart:''
       }
     },
+    created() {
+      bus.$on('collapse',(val) => this.collapse = !val)
+    },
     watch:{
+      // collapse(){
+      //   this.myChart.resize()
+      // },
       temperature(){
         console.log("温度变了");
         this.drawLine(this.createTime,this.temperature)
       },
       createTime(){
-        console.log("时间变了");
+        // console.log("时间变了");
         this.drawLine(this.createTime,this.temperature)
       }
     },
@@ -43,7 +52,7 @@
       drawLine(createTime,temperature){
         // let chartDom = document.getElementById('temp-line');
         let chartDom = this.$refs.temperature;
-        let myChart = echarts.init(chartDom);
+        this.myChart = echarts.init(chartDom);
         let option;
         option = {
           //设置grid是设置图表与父元素div块之间边界，让图标尽可能占满整个div块
@@ -88,16 +97,17 @@
           }
           ]
         };
-        option && myChart.setOption(option);
-      }
+        option && this.myChart.setOption(option);
+      },
+
     },
   }
 </script>
 
 <style scoped>
   #temp-line{
-  width: 400px;
-  height: 200px;
+  width: 100%;
+  height: 100%;
   background-color: #fff;
 }
 </style>

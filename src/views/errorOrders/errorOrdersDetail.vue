@@ -83,7 +83,7 @@
     },
     watch:{
       '$route'(to,from){
-        if(this.$route.query.order !== undefined && this.$route.query.order !== "[object Object"){
+        if(this.$route.query.order !== undefined && this.$route.query.order !== "[object Object]"){
           this.orderData = this.$route.query.order
           this.getDriverInfo()
           this.getCarStateData(this.orderData.id)
@@ -103,6 +103,7 @@
       getCarStateData(orderId){
         getCarState(orderId).then( res => {
           console.log(res.data);
+          console.log(res.data[0]);
           this.carPosition = []
           // this.errorPoints = []
           this.createTime = []
@@ -112,12 +113,12 @@
           for(let index in this.humidity){
             this.humidity[index] = []
           }
-          for(let state in res.data){
+          for(let state of  res.data){
             let point = []
-            Vue.set(point,0,state.longitude)
-            Vue.set(point,1,state.latitude)
+            this.$set(point,0,state.longitude)
+            this.$set(point,1,state.latitude)
             this.carPosition.push(point)
-            this.createTime.push(state.createTime)
+            this.createTime.push(state.createTime.slice(11))
             this.temperatures.temperature1.push(state.temperature1)
             this.temperatures.temperature2.push(state.temperature2)
             this.temperatures.temperature3.push(state.temperature3)
@@ -133,6 +134,10 @@
             this.humidity.humidity6.push(state.humidity6)
             this.humidity.humidity7.push(state.humidity7)
           }
+          console.log(this.carPosition);
+          console.log(this.createTime);
+          console.log(this.temperatures);
+          console.log(this.humidity);
         })
       },
       getErrorPoints(){

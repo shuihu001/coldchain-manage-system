@@ -12,8 +12,6 @@
                 <el-input v-model="query.name" placeholder="请输入始发地或目的地或运单号进行查询" class="handle-input mr10"></el-input>
                 <el-button type="primary" icon="el-icon-search" @click="handleSearch">搜索</el-button>
             </div>
-<!--            <processed-item></processed-item>-->
-<!--          <processed-item v-for="order in orderData" :order-data="order" :key="order.id"></processed-item>-->
           <one-order
             v-for="oneOrder in orderData"
             :one-order="oneOrder"
@@ -82,28 +80,14 @@ export default {
               console.log(err);
             });
         },
-
-      // getData() {
-      //   fetchData(this.query).then(res => {
-      //     this.tableData = res.list;
-      //
-      //   });
-      // },
-
       getProcessedOrderData(completeState){
         getOrders(completeState).then(res =>{
-          for(let order of res.data){
-            if(order.alert == 0){
-              this.orderData.push(order)
-            }
-          }
-          console.log(res.data);
-          // this.orderData = res.data;
-          // this.orderData.push(...res.data)
+          let orders = []
+          orders = res.data.filter(item => item.alert == 0)
+          this.orderData = orders
           if (this.query.name !== ''){
             this.orderData = this.orderData.filter(item => item.id.toString().match(this.query.name) || item.starting.match(this.query.name) || item.destination.match(this.query.name));
           }
-          console.log(this.orderData[0]);
         }).catch()
       },
       getDriverInfo(){
@@ -116,7 +100,6 @@ export default {
       },
         // 触发搜索按钮
         handleSearch() {
-            // this.$set(this.query, 'pageIndex', 1);
             this.getProcessedOrderData(5);
         },
         // 删除操作

@@ -23,10 +23,7 @@ import VueVideoPlayer from 'vue-video-player'
 // Vue.use(Echarts)
 // require videojs style
 import 'video.js/dist/video-js.css'
-Vue.use(VueVideoPlayer, /* {
-    options: global default options,
-    events: global videojs events
-  } */)
+Vue.use(VueVideoPlayer)
 
 // import Echarts from 'echarts'
 // Vue.use(Echarts)

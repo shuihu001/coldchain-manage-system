@@ -1,18 +1,18 @@
 <!--  -->
 <template>
   <div>
-    <el-row :gutter="20">
+    <el-row :gutter="10">
       <el-col :span="9">
-        <el-card shadow="hover" class="mgb20" style="height:470px;">
+        <el-card shadow="hover" class="mgb20" style="height:400px;">
           <schart ref="ring" class="schartpie" canvasId="ring" :options="options1"></schart>
         </el-card>
       </el-col>
       <el-col :span="15">
-        <el-card shadow="hover" id="container" class="mgb20" style="height:470px;">
+        <el-card shadow="hover" id="container" class="mgb20" style="height:400px;">
         </el-card>
       </el-col>
     </el-row>
-    <el-row :gutter="20">
+    <el-row :gutter="10">
       <el-col :span="12">
         <el-card shadow="hover">
           <div id="stack"></div>
@@ -34,12 +34,17 @@ import echarts from 'echarts'
 import Schart from 'vue-schart';
 import AMap from 'AMap'
 import {errData, fetchData} from '../api/index'
+import { getOrders, getCarState, getLatestCarState } from '../network/requestDatas'
 import Vue from 'vue'
-
 export default {
   name: 'homepage',
+  components: {
+    Schart
+  },
   data() {
     return {
+      timer:'',
+      startingPoint:require("../assets/icons/startingPoint.svg"),
       pos: [],
       temp: [],
       errSum: [0,0,0],
@@ -54,6 +59,7 @@ export default {
         [{keyword: '哈尔滨市政府',city: '哈尔滨'},{keyword:'北京物资学院',city:'北京'}],
         [{keyword: '龙门石窟',city: '洛阳'},{keyword:'北京邮电大学',city:'北京'}],
       ],
+      lines:[],
       options1: {
         type: 'ring',
         title: {
@@ -155,13 +161,56 @@ export default {
       }
     }
   },
-  components: {
-    Schart
-  },
   created() {
     this.getXlable();
     this.getData();
-    // console.log(this.pos);
+    getOrders(3).then( async res => {
+      for (let order of res.data){
+        await getCarState(order.id).then(res => {
+          let  path = []
+          for(let record of res.data){
+            let point = []
+            if(record.longitude !== null  && record.latitude !== null){
+              this.$set(point,0,record.longitude)
+              this.$set(point,1,record.latitude)
+              path.push(point)
+            }
+          }
+          let line = {id:'',path:[]}
+          this.$set(line,"id",order.id)
+          this.$set(line,"path",path)
+          this.lines.push(line)
+        }).catch(err => {
+          console.log(err);
+        })
+      }
+    })
+    this.timer = setInterval(async () => {
+      for (let line of this.lines){
+        await getLatestCarState(line.id).then(res => {
+          if(res.data.longitude !== null  && res.data.latitude !== null){
+            let point = new AMap.LngLat(res.data.longitude,res.data.latitude)
+            line.path.push(point)
+          }
+        }).catch(err => {
+          console.log(err);
+        })
+      }
+      setTimeout(() => {
+        this.drawTrack(this.lines)
+        console.log("更新了一次");
+      },200)
+    },60*1000)
+  },
+  mounted() {
+    setTimeout(() =>{
+      this.drawLine()
+      this.drawTrack(this.lines)
+    },200)
+  },
+  deactivated() {
+    clearInterval(this.timer)
+    this.timer = null
   },
   methods: {
     getXlable() {
@@ -174,18 +223,17 @@ export default {
         this.options3.labels[i] = this.addMonths(i-5).cmonth;
       }
     },
-
     getData() {
       //map
       fetchData(5).then(res => {
-        console.log(res);
+        // console.log(res);
         for (let n = 0; n < res.data.length; n++) {
           Vue.set(this.pos,n, res.data[n].pos);
-          console.log(this.pos);
+          // console.log(this.pos);
         }
       })
       fetchData(5).then(res => {
-        console.log(res.data);
+        // console.log(res.data);
         this.temp = res.data;
         for (let m = 0; m < this.temp.length; m++) {
           let yt1 = new Date(this.temp[m].updateTime).getFullYear();
@@ -238,11 +286,10 @@ export default {
         this.options2.series[1].data = this.errDays;
         this.options3.datasets[0].data = this.normalMonths;
         this.options3.datasets[1].data = this.errMonths;
-        console.log(this.options2.series[0].data);
-        console.log(this.options2.series[1].data);
+        // console.log(this.options2.series[0].data);
+        // console.log(this.options2.series[1].data);
       })
     },
-
     addMonths(monthNum) {
       let nm = new Date();
       let year = nm.getFullYear();
@@ -262,7 +309,6 @@ export default {
       let cmonth = year + "-" + month;
       return {cmonth,year,mmonth};
     },
-
     addDays(days){
       let nd = new Date();
       nd = nd.valueOf();
@@ -320,16 +366,45 @@ export default {
     drawLine() {
       this.myStack = echarts.init(document.getElementById('stack'))
       this.myStack.setOption(this.options2);
-    }
+    },
+    drawTrack(paths){
+      const mapDemo = new AMap.Map('container',{
+        zoom:13
+      })
+      const icon = new AMap.Icon({
+        size:new AMap.Size(40,40),
+        image:this.startingPoint,
+        imageSize:new AMap.Size(30,30),
+      })
+      mapDemo.setMapStyle('amap://styles/macaron')
+      for(let path of paths){
+        let marker = new AMap.Marker({
+          position:path.path[0],
+          // icon:this.startingPoint
+          zIndex:100,
+          offset:new AMap.Pixel(-15,-25),
+          icon:icon
+        })
+        let polyLine = new AMap.Polyline({
+          path:path.path,
+          isOutline:false,
+          // strokeColor: "#3366FF",
+          showDir:true,
+          strokeColor: "#28F",
+          strokeOpacity: 1,
+          strokeWeight: 5,
+          strokeStyle: "solid",
+          strokeDasharray: [10, 5],
+          lineJoin: 'round',
+          lineCap: 'round',
+          zIndex: 50,
+        })
+        mapDemo.add(marker)
+        mapDemo.add(polyLine)
+      }
+      mapDemo.setFitView()
+    },
   },
-  mounted() {
-    setTimeout(() =>{
-      this.drawLine()
-      this.drawMap()
-    },500)
-    // this.drawLine()
-
-  }
 };
 
 </script>
@@ -422,7 +497,7 @@ export default {
 }
 
 .mgb20 {
-  margin-bottom: 20px;
+  margin-bottom: 5px;
 }
 
 .schart {
@@ -431,7 +506,7 @@ export default {
 }
 .schartpie {
   width: 100%;
-  height: 500px;
+  height: 400px;
 }
 #container{
   width: 100%;

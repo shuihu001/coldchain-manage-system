@@ -48,7 +48,7 @@ export function getLatestCarState(orderId) {
   return request({
     url:"/api/send/carState",
     method:"post",
-    params:{
+    data:{
       "orderId":orderId
     }
   })

@@ -130,7 +130,6 @@
             this.humidity.humidity7.push(state.humidity7)
           }
           // console.log(this.carPosition);
-          console.log(this.createTime);
           // console.log(this.temperatures);
           // console.log(this.humidity);
         })
@@ -145,34 +144,36 @@
     height: 100%;
   }
   .car-position{
-    width: 840px;
+    width: 66%;
     height: 410px;
     margin-bottom: 10px;
     float: left;
   }
   .temp-line,.humi-line{
-    width: 400px;
+    width: 33%;
     height: 200px;
     float: right;
+    margin-left: 5px;
     margin-bottom: 10px;
   }
   .driver-info{
-    width: 415px;
+    width: 33%;
     height: 215px;
     float: left;
     background-color: #fff;
-    margin-right: 10px;
+    margin-right: 3px;
   }
   .goods-info{
-    width: 415px;
+    width: 33%;
     height: 215px;
     background-color: #fff;
     float: left;
   }
   .goods-video{
-    width: 400px;
-    height: 215px;
+    width: 33%;
+    height: 200px;
     background-color: #fff;
+    margin-left: 5px;
     float: right;
   }
 </style>

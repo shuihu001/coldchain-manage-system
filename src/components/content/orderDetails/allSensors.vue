@@ -41,7 +41,7 @@ export default {
       temp:[3.0,3.5,3.2,2.7,2.9,3.7,3.2],
       humi:[75.0,79.3,72.2,81.6,76.5,80.2,79.9]
     }
-  }
+  },
 }
 </script>
 
@@ -51,14 +51,14 @@ export default {
     height: 210px;
   }
   .temperature{
-    width: 195px;
+    width: 48%;
     height: 100%;
     margin-right: 10px;
     float: left;
     background-color: #fff;
   }
   .humidity{
-    width: 195px;
+    width: 48%;
     height: 100%;
     float: left;
     background-color: #fff;

@@ -32,7 +32,7 @@
       //   this.drawLine()
       // },
       createTime(){
-        console.log("时间变了");
+        // console.log("时间变了");
         this.drawLine()
       }
     },
@@ -104,8 +104,8 @@
 
 <style scoped>
   #humi-line{
-    width: 400px;
-    height: 200px;
+    width: 100%;
+    height: 100%;
     background-color: #fff;
   }
 </style>

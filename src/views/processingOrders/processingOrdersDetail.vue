@@ -1,7 +1,8 @@
 <template>
   <div class="all-info">
     <div class="car-position">
-      <latest-track :latest-point="carPosition"></latest-track>
+<!--      <latest-track :latest-point="carPosition"></latest-track>-->
+      <latest-track :order-id="orderData.id" :key="orderData.id"></latest-track>
     </div>
     <div class="goods-video">
       <good-video :video-url = "orderData.videoHttpBack"></good-video>
@@ -12,7 +13,7 @@
     <div class="goods-info">
       <goodsInfo :goods-info = "orderData"></goodsInfo>
     </div>
-    <div class="temp-line">
+    <div class="all-sensors">
       <!--      <tempLine></tempLine>-->
       <allSensors :temperatures = "temperatures" :humidity = "humidity"></allSensors>
     </div>
@@ -29,8 +30,7 @@
   import goodsInfo from "components/content/orderDetails/goodsInfo";
   import goodVideo from "../../components/content/orderDetails/goodVideo";
 
-  import { getDriver, getLatestCarState } from "../../network/requestDatas";
-
+  import {getCarState, getDriver, getLatestCarState} from "../../network/requestDatas";
   export default {
     name: "processingOrdersDetail",
     components: {
@@ -53,8 +53,9 @@
       }
     },
     created(){
-      this.orderData = this.$route.query.order
+      this.orderData = JSON.parse(this.$route.query.order)
       this.getDriverInfo()
+      this.getCarStateData(this.orderData.id)
       setInterval(() => {
         this.getCarStateData(this.orderData.id)
       },60*1000)
@@ -64,9 +65,13 @@
     },
     watch:{
       '$route'(to,from){
-        if(this.$route.query.order !== undefined && this.$route.query.order !== "[object Object]"){
-          this.orderData = this.$route.query.order
+        // console.log(this.$route);
+        // console.log(this.$route.query.order);
+        if(this.$route.query.order != undefined){
+          this.orderData = JSON.parse(this.$route.query.order)
+          // console.log(this.orderData);
           this.getDriverInfo()
+          this.getCarStateData(this.orderData.id)
           setInterval(() => {
             this.getCarStateData(this.orderData.id)
           },60*1000)
@@ -84,22 +89,49 @@
       },
       getCarStateData(orderId){
         getLatestCarState(orderId).then( res => {
-          Vue.set(this.carPosition,0,res.data.longitude)
-          Vue.set(this.carPosition,1,res.data.latitude)
-          Vue.set(this.temperatures,0,res.data.temperature1)
-          Vue.set(this.temperatures,1,res.data.temperature2)
-          Vue.set(this.temperatures,2,res.data.temperature3)
-          Vue.set(this.temperatures,3,res.data.temperature4)
-          Vue.set(this.temperatures,4,res.data.temperature5)
-          Vue.set(this.temperatures,5,res.data.temperature6)
-          Vue.set(this.temperatures,6,res.data.temperature7)
-          Vue.set(this.humidity,0,res.data.humidity1)
-          Vue.set(this.humidity,1,res.data.humidity2)
-          Vue.set(this.humidity,2,res.data.humidity3)
-          Vue.set(this.humidity,3,res.data.humidity4)
-          Vue.set(this.humidity,4,res.data.humidity5)
-          Vue.set(this.humidity,5,res.data.humidity6)
-          Vue.set(this.humidity,6,res.data.humidity7)
+          // console.log(res.data);
+          // console.log(res.data[0]);
+          this.$set(this.carPosition,0,res.data.longitude)
+          this.$set(this.carPosition,1,res.data.latitude)
+          this.$set(this.temperatures,0,res.data.temperature1)
+          this.$set(this.temperatures,1,res.data.temperature2)
+          this.$set(this.temperatures,2,res.data.temperature3)
+          this.$set(this.temperatures,3,res.data.temperature4)
+          this.$set(this.temperatures,4,res.data.temperature5)
+          this.$set(this.temperatures,5,res.data.temperature6)
+          this.$set(this.temperatures,6,res.data.temperature7)
+          this.$set(this.humidity,0,res.data.humidity1)
+          this.$set(this.humidity,1,res.data.humidity2)
+          this.$set(this.humidity,2,res.data.humidity3)
+          this.$set(this.humidity,3,res.data.humidity4)
+          this.$set(this.humidity,4,res.data.humidity5)
+          this.$set(this.humidity,5,res.data.humidity6)
+          this.$set(this.humidity,6,res.data.humidity7)
+          // console.log(JSON.stringify(this.carPosition));
+          // this.carPosition = JSON.stringify(this.carPosition)
+          // console.log(this.carPosition);
+          // this.carPosition = JSON.parse(this.carPosition)
+          // console.log(JSON.stringify(this.carPosition));
+        })
+      },
+      getAllCarState(){
+        getCarState(id).then(res => {
+          let  path = []
+          for(let record of res.data){
+            let point = []
+            if(record.longitude !== null  && record.latitude !== null){
+              this.$set(point,0,record.longitude)
+              this.$set(point,1,record.latitude)
+              path.push(point)
+            }
+          }
+          let line = {id:'',path:[]}
+          this.$set(line,"id",order.id)
+          this.$set(line,"path",path)
+          this.lines.push(line)
+          console.log(this.lines);
+        }).catch(err => {
+          console.log(err);
         })
       }
     }
@@ -112,20 +144,20 @@
   height: 100%;
 }
 .car-position{
-  width: 620px;
+  width: 49%;
   height: 410px;
   margin-bottom: 10px;
   /*padding-bottom: 10px;*/
   float: left;
 }
-.temp-line,.humi-line{
-  width: 400px;
+.all-sensors{
+  width: 33%;
   height: 200px;
   float: right;
   margin-bottom: 10px;
 }
 .driver-info{
-  width: 415px;
+  width: 33%;
   height: 210px;
   float: left;
   background-color: #fff;
@@ -133,13 +165,13 @@
   margin-right: 10px;
 }
 .goods-info{
-  width: 415px;
+  width: 33%;
   height: 215px;
   background-color: #fff;
   float: left;
 }
 .goods-video{
-  width: 620px;
+  width: 49%;
   height: 420px;
   /*background-color: #fff;*/
   float: right;

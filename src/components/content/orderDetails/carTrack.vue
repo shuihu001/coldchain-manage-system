@@ -41,11 +41,10 @@
     },
 
     watch:{
-      points:function(newValue){
-        console.log(newValue);
-        // console.log(oldValue);
-        console.log("points变了");
-        this.drawTrack(newValue, this.errorPoints)
+      points(){
+        setTimeout(() => {
+          this.drawTrack(this.points, this.errorPoints)
+        },200)
       }
     },
     mounted() {
@@ -63,13 +62,11 @@
       //   })
       // },
       drawTrack(points,errorPoint){
-        // console.log(this.points);
-        // console.log(this.errorPoint);
         const mapDemo = new AMap.Map('container',{
           zoom:14
         })
         mapDemo.setMapStyle('amap://styles/macaron')
-        if(errorPoint){
+        if(errorPoint.length > 0){
           for(let point in errorPoint){
             let marker = new AMap.Marker({
               position:point
@@ -77,25 +74,20 @@
             mapDemo.add(marker)
           }
         }
-        const numMAX = 300
-        // console.log(points);
-        // console.log(points instanceof Array);
-        console.log(points.length);
+        const numMAX = 4
         let time = Math.ceil(points.length/numMAX)
-        console.log(time);
         for( let i=1; i<=time; i++){
           let segPoint = []
-          for(let j=(i-1)*numMAX;  j <= i*numMAX ;j++){
-            // console.log(points[j]);
+          for(let j=(i-1)*numMAX; j <= i*numMAX ;j++){
             if(points[j] !== undefined){
               segPoint.push(points[j])
             }
           }
-          // console.log(segPoint);
-          // console.log("画图");
           let polyLine = new AMap.Polyline({
+            // map:mapDemo,
             path:segPoint,
             isOutline:false,
+            showDir:true,
             strokeColor: "#3366FF",
             strokeOpacity: 1,
             strokeWeight: 5,
@@ -105,12 +97,9 @@
             lineCap: 'round',
             zIndex: 50,
           })
-          console.log("没问题");
           mapDemo.add(polyLine)
-          // polyLine.setMap(mapDemo)
-          console.log("没问题");
-          mapDemo.setFitView([polyLine])
         }
+        mapDemo.setFitView()
       }
     }
   }

@@ -73,11 +73,13 @@ export default {
     },
     methods: {
         detailSearch(order) {
-            // 需要添加判断逻辑，觉得跳转页面的路径
+          //将对象转换成字符串再传过去，可以保证在详情页刷新时参数不会丢失
+          let newOrder = JSON.stringify(order)
+          // 需要添加判断逻辑，觉得跳转页面的路径
             this.$router.push({
               path:'/processingOrdersDetail',
               query:{
-                order:order
+                order:newOrder
               }
             })
           // console.log("点击了");
