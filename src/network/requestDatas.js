@@ -2,7 +2,6 @@ import request from "./index"
 //根据订单状态请求订单数据
 export function getOrders(completeState) {
   return request({
-    // url:"./ordering.json",
     url:"/api/display/goodOrder",
     method:"post",
     params:{
