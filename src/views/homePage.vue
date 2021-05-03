@@ -43,6 +43,7 @@ export default {
   },
   data() {
     return {
+      mapDemo:null,
       timer:'',
       startingPoint:require("../assets/icons/startingPoint.svg"),
       pos: [],
@@ -164,48 +165,55 @@ export default {
   created() {
     this.getXlable();
     this.getData();
-    getOrders(3).then( async res => {
-      for (let order of res.data){
-        await getCarState(order.id).then(res => {
-          let  path = []
-          for(let record of res.data){
-            let point = []
-            if(record.longitude !== null  && record.latitude !== null){
-              this.$set(point,0,record.longitude)
-              this.$set(point,1,record.latitude)
-              path.push(point)
-            }
-          }
-          let line = {id:'',path:[]}
-          this.$set(line,"id",order.id)
-          this.$set(line,"path",path)
-          this.lines.push(line)
-        }).catch(err => {
-          console.log(err);
-        })
-      }
-    })
-    this.timer = setInterval(async () => {
-      for (let line of this.lines){
-        await getLatestCarState(line.id).then(res => {
-          if(res.data.longitude !== null  && res.data.latitude !== null){
-            let point = new AMap.LngLat(res.data.longitude,res.data.latitude)
-            line.path.push(point)
-          }
-        }).catch(err => {
-          console.log(err);
-        })
-      }
-      setTimeout(() => {
-        this.drawTrack(this.lines)
-        console.log("更新了一次");
-      },200)
+    this.drawAllTracks();
+    // getOrders(3).then( async res => {
+    //   for (let order of res.data){
+    //     await getCarState(order.id).then(res => {
+    //       let  path = []
+    //       for(let record of res.data){
+    //         let point = []
+    //         if(record.longitude !== null  && record.latitude !== null){
+    //           this.$set(point,0,record.longitude)
+    //           this.$set(point,1,record.latitude)
+    //           path.push(point)
+    //         }
+    //       }
+    //       let line = {id:'',path:[]}
+    //       this.$set(line,"id",order.id)
+    //       this.$set(line,"path",path)
+    //       this.lines.push(line)
+    //     }).catch(err => {
+    //       console.log(err);
+    //     })
+    //   }
+    // })
+    this.timer = setInterval(() => {
+      this.drawAllTracks();
     },60*1000)
+    // this.timer = setInterval(async () => {
+    //   for (let line of this.lines){
+    //     await getLatestCarState(line.id).then(res => {
+    //       if(res.data.longitude !== null  && res.data.latitude !== null){
+    //         let point = new AMap.LngLat(res.data.longitude,res.data.latitude)
+    //         line.path.push(point)
+    //       }
+    //     }).catch(err => {
+    //       console.log(err);
+    //     })
+    //   }
+    //   setTimeout(() => {
+    //     this.drawTrack(this.lines)
+    //     console.log("更新了一次");
+    //   },200)
+    // },60*1000)
+  },
+  destroyed() {
+    console.log("被破坏了");
   },
   mounted() {
     setTimeout(() =>{
       this.drawLine()
-      this.drawTrack(this.lines)
+      // this.drawTrack(this.lines)
     },200)
   },
   deactivated() {
@@ -366,6 +374,60 @@ export default {
     drawLine() {
       this.myStack = echarts.init(document.getElementById('stack'))
       this.myStack.setOption(this.options2);
+    },
+    drawAllTracks(){
+      const that = this
+      getOrders(3).then( async res => {
+        console.log(res.data);
+        for (let order of res.data){
+          await getCarState(order.id).then(async res => {
+            console.log("请求成功");
+            let path = []
+            for (let record of await res.data){
+              let point = []
+              if (record.longitude !== null  && record.latitude !== null){
+                this.$set(point,0,record.longitude)
+                this.$set(point,1,record.latitude)
+                path.push(point)
+              }
+            }
+            const numMAX = 39
+            let time = Math.ceil(path.length / numMAX)
+            for (let i = 1; i <= time; i++) {
+              let segPoint = []
+              for (let j = (i-1)*numMAX; j <= i * numMAX; j++) {
+                if(path[j] !== undefined){
+                  segPoint.push(path[j])
+                }
+              }
+              AMap.convertFrom(segPoint,'gps',  function (status,result) {
+                if(result.info == 'ok') {
+                  console.log(result.locations);
+                  that.mapDemo = new AMap.Map('container',{
+                    zoom:13
+                  })
+                  that.mapDemo.setMapStyle('amap://styles/macaron')
+                  let polyLine = new AMap.Polyline({
+                    path: result.locations,
+                    isOutline: false,
+                    showDir:true,
+                    strokeColor: "#3366FF",
+                    strokeOpacity: 1,
+                    strokeWeight: 5,
+                    strokeStyle: "solid",
+                    strokeDasharray: [10, 5],
+                    lineJoin: 'round',
+                    lineCap: 'round',
+                    zIndex: 50,
+                  })
+                  polyLine.setMap(that.mapDemo)
+                  that.mapDemo.setFitView()
+                }
+              })
+            }
+          })
+        }
+      })
     },
     drawTrack(paths){
       const mapDemo = new AMap.Map('container',{
