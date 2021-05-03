@@ -25,10 +25,7 @@
 
 <script>
 import oneOrder from '../../components/content/oneOrder'
-import processedItem from "./processedItem";
-// import { fetchData ,getOrders,getDriver} from '../../api/index';
 import { getOrders, getDriver } from "../../network/requestDatas";
-
 export default {
     name: 'processedOrdersSum',
     data() {
@@ -53,51 +50,50 @@ export default {
     },
     components: {
         'one-order': oneOrder,
-      processedItem
     },
     created() {
-        // this.getData();
       this.getProcessedOrderData(5)
       // this.getDriverInfo()
     },
     methods: {
         detailSearch(order) {
+          let newOrder = JSON.stringify(order)
             this.$router.push({
               path:'/processedOrdersDetail',
               query:{
-                order:order
+                order:newOrder
               }
             })
           // this.$router.push('/processedOrdersDetail'+this.orderData[0].id)
         },
         // 获取 easy-mock 的模拟数据
-        getData() {
-            fetchData(this.query).then(res => {
-                console.log(res);
-                this.tableData = res.list;
-                this.pageTotal = res.pageTotal || 50;
-            }).catch(err =>{
-              console.log(err);
-            });
-        },
+        // getData() {
+        //     fetchData(this.query).then(res => {
+        //         console.log(res);
+        //         this.tableData = res.list;
+        //         this.pageTotal = res.pageTotal || 50;
+        //     }).catch(err =>{
+        //       console.log(err);
+        //     });
+        // },
       getProcessedOrderData(completeState){
         getOrders(completeState).then(res =>{
-          let orders = []
-          orders = res.data.filter(item => item.alert == 0)
-          this.orderData = orders
+          this.orderData = res.data.filter(item => item.alert == 0)
           if (this.query.name !== ''){
             this.orderData = this.orderData.filter(item => item.id.toString().match(this.query.name) || item.starting.match(this.query.name) || item.destination.match(this.query.name));
           }
-        }).catch()
-      },
-      getDriverInfo(){
-        getDriver().then(res => {
-          console.log(res.data);
-          this.driverInfo.push(...res.data)
         }).catch(err => {
           console.log(err);
         })
       },
+      // getDriverInfo(){
+      //   getDriver().then(res => {
+      //     console.log(res.data);
+      //     this.driverInfo.push(...res.data)
+      //   }).catch(err => {
+      //     console.log(err);
+      //   })
+      // },
         // 触发搜索按钮
         handleSearch() {
             this.getProcessedOrderData(5);

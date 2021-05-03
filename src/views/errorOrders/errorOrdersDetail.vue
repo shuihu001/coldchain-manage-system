@@ -10,10 +10,10 @@
       <humi-Line :humidity = "humidity" :create-time = "createTime"></humi-Line>
     </div>
     <div class="driver-info">
-      <driverInfo :driver-info = "driverData"></driverInfo>
+      <driver-info :driver-info = "driverData"></driver-info>
     </div>
     <div class="goods-info">
-      <goodsInfo :goods-info = "orderData"></goodsInfo>
+      <goods-info :goods-info = "orderData"></goods-info>
     </div>
     <div class="goods-video">
       <good-video :video-url = "orderData.videoHttpBack"></good-video>
@@ -73,7 +73,7 @@
       }
     },
     created() {
-      this.orderData = this.$route.query.order
+      this.orderData = JSON.parse(this.$route.query.order)
       this.getDriverInfo()
       this.getCarStateData(this.orderData.id)
       this.getErrorPoints()
@@ -83,8 +83,8 @@
     },
     watch:{
       '$route'(to,from){
-        if(this.$route.query.order !== undefined && this.$route.query.order !== "[object Object]"){
-          this.orderData = this.$route.query.order
+        if(this.$route.query.order !== undefined){
+          this.orderData = JSON.parse(this.$route.query.order)
           this.getDriverInfo()
           this.getCarStateData(this.orderData.id)
           this.getErrorPoints()
@@ -163,34 +163,36 @@
     height: 100%;
   }
   .car-position{
-    width: 840px;
+    width: 66%;
     height: 410px;
     margin-bottom: 10px;
     float: left;
   }
   .temp-line,.humi-line{
-    width: 400px;
+    width: 33%;
     height: 200px;
     float: right;
+    margin-left: 5px;
     margin-bottom: 10px;
   }
   .driver-info{
-    width: 415px;
+    width: 33%;
     height: 215px;
     float: left;
     background-color: #fff;
-    margin-right: 10px;
+    margin-right: 3px;
   }
   .goods-info{
-    width: 415px;
+    width: 33%;
     height: 215px;
     background-color: #fff;
     float: left;
   }
   .goods-video{
-    width: 400px;
-    height: 215px;
+    width: 33%;
+    height: 200px;
     background-color: #fff;
+    margin-left: 5px;
     float: right;
   }
 </style>

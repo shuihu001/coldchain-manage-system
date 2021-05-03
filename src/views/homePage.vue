@@ -33,8 +33,8 @@
 import echarts from 'echarts'
 import Schart from 'vue-schart';
 import AMap from 'AMap'
-import {errData, fetchData} from '../api/index'
-import { getOrders, getCarState, getLatestCarState } from '../network/requestDatas'
+// import {errData, fetchData} from '../api/index'
+import { getOrders, getCarState, getLatestCarState, errData, fetchData } from '../network/requestDatas'
 import Vue from 'vue'
 export default {
   name: 'homepage',
@@ -225,14 +225,14 @@ export default {
     },
     getData() {
       //map
-      fetchData(5).then(res => {
+      getOrders(5).then(res => {
         // console.log(res);
         for (let n = 0; n < res.data.length; n++) {
           Vue.set(this.pos,n, res.data[n].pos);
-          // console.log(this.pos);
+          // console.log(res.data[n].pos);
         }
       })
-      fetchData(5).then(res => {
+      getOrders(5).then(res => {
         // console.log(res.data);
         this.temp = res.data;
         for (let m = 0; m < this.temp.length; m++) {

@@ -9,6 +9,7 @@ export function getOrders(completeState) {
     }
   })
 }
+
 //请求司机信息
 export function getDriver(driverId) {
   return request({
@@ -61,6 +62,7 @@ export function getErrorOrders() {
   })
 }
 
+
 //请求单个异常订单信息
 export function getErrorOrderData(orderId) {
   return request({
@@ -71,3 +73,12 @@ export function getErrorOrderData(orderId) {
     }
   })
 }
+
+//首页用到的函数
+export function errData(query) {
+  return request({
+    url: '/api/errorOrder/showAll',
+    method: 'post',
+    params: query
+  });
+};

@@ -16,7 +16,7 @@
       <goods-info :goods-info = "orderData"></goods-info>
     </div>
     <div class="goods-video">
-      <good-video  :video-url = "orderData.videoHttpBack"></good-video>
+      <good-video :video-url = "orderData.videoHttpBack"></good-video>
     </div>
   </div>
 </template>
@@ -72,7 +72,8 @@
       }
     },
     created() {
-      this.orderData = this.$route.query.order
+      console.log(this.$route);
+      this.orderData = JSON.parse(this.$route.query.order)
       this.getDriverInfo()
       this.getCarStateData(this.orderData.id)
     },
@@ -81,8 +82,8 @@
     },
     watch:{
       '$route'(to,from){
-        if(this.$route.query.order !== undefined && this.$route.query.order !== "[object Object]"){
-          this.orderData = this.$route.query.order;
+        if(this.$route.query.order !== undefined){
+          this.orderData = JSON.parse(this.$route.query.order);
           this.getDriverInfo();
           this.getCarStateData(this.orderData.id);
           this.$forceUpdate()

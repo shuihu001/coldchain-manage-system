@@ -20,7 +20,6 @@
               @detailSearch = "detailSearch(oneOrder)"
             >
             </one-order>
-<!--            <one-order  v-for="oneOrder in orderData" :order-data="orderData" :key="orderData.id"></one-order>-->
             <!-- 分页 -->
             <!-- <div class="pagination">
                 <el-pagination
@@ -38,8 +37,7 @@
 
 <script>
 import oneOrder from '../../components/content/oneOrder'
-import processingItem from "./processingItem";
-import { getOrders,getDriver } from '../../network/requestDatas';
+import { getOrders } from '../../network/requestDatas';
 export default {
     name: 'processingOrderSum',
     data() {
@@ -59,17 +57,13 @@ export default {
             idx: -1,
             id: -1,
           orderData:[],
-          driverInfo:[]
         };
     },
     components: {
         'one-order': oneOrder,
-      processingItem
     },
     created() {
-        // this.getData();
         this.getOrderData(3)
-      // this.getDriverInfo()
     },
     methods: {
         detailSearch(order) {
@@ -82,36 +76,13 @@ export default {
                 order:newOrder
               }
             })
-          // console.log("点击了");
-          // console.log(this.orderData[0].id);
-          // this.$router.push('/processingOrdersDetail'+this.orderData[0].id)
-          // this.$router.push('/processingOrdersDetail')
         },
-        // 获取 easy-mock 的模拟数据
-        // getData() {
-        //     fetchData(this.query).then(res => {
-        //         console.log(res);
-        //         this.tableData = res.list;
-        //         this.pageTotal = res.pageTotal || 50;
-        //     });
-        // },
         getOrderData(completeState){
           getOrders(completeState).then(res =>{
             this.orderData = res.data;
-            // this.orderData.push(...res.data)
-            // console.log(this.orderData);
             if (this.query.name !== '') {
               this.orderData = this.orderData.filter(item => item.id.toString().match(this.query.name) || item.starting.match(this.query.name) || item.destination.match(this.query.name));
-              console.log(this.orderData);
             }
-          }).catch(err => {
-            console.log(err);
-          })
-        },
-        getDriverInfo(){
-          getDriver().then(res => {
-            console.log(res);
-            this.driverInfo.push(...res.data)
           }).catch(err => {
             console.log(err);
           })
@@ -119,8 +90,10 @@ export default {
         // 触发搜索按钮
         handleSearch() {
             // this.$set(this.query, 'pageIndex', 1);
-            this.getOrderData(1);
+            this.getOrderData(3);
         },
+
+
         // 删除操作
         handleDelete(index, row) {
             // 二次确认删除

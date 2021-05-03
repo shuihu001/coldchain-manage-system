@@ -26,7 +26,7 @@
 
 <script>
 import oneOrder from '../../components/content/oneOrder'
-import errorItem from "./errorItem";
+// import errorItem from "./errorItem";
 import { getErrorOrders, getOrders } from "../../network/requestDatas";
 // import {fetchData, getDriver, getErrorOrders, getOrders} from '../../api/index';
 export default {
@@ -52,7 +52,7 @@ export default {
     },
     components: {
         'one-order': oneOrder,
-      errorItem
+      // errorItem
     },
     created() {
         // this.getData();
@@ -62,10 +62,11 @@ export default {
     },
     methods: {
         detailSearch(order) {
+          let newOrder = JSON.stringify(order)
             this.$router.push({
               path:'/errorOrdersDetail',
               query:{
-                order:order
+                order:newOrder
               }
             })
           // this.$router.push('/errorOrdersDetail'+this.orderData[0].id)

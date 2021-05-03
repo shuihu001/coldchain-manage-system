@@ -14,7 +14,6 @@
       <goodsInfo :goods-info = "orderData"></goodsInfo>
     </div>
     <div class="all-sensors">
-      <!--      <tempLine></tempLine>-->
       <allSensors :temperatures = "temperatures" :humidity = "humidity"></allSensors>
     </div>
   </div>
@@ -65,11 +64,8 @@
     },
     watch:{
       '$route'(to,from){
-        // console.log(this.$route);
-        // console.log(this.$route.query.order);
-        if(this.$route.query.order != undefined){
+        if(this.$route.query.order !== undefined){
           this.orderData = JSON.parse(this.$route.query.order)
-          // console.log(this.orderData);
           this.getDriverInfo()
           this.getCarStateData(this.orderData.id)
           setInterval(() => {
@@ -89,8 +85,6 @@
       },
       getCarStateData(orderId){
         getLatestCarState(orderId).then( res => {
-          // console.log(res.data);
-          // console.log(res.data[0]);
           this.$set(this.carPosition,0,res.data.longitude)
           this.$set(this.carPosition,1,res.data.latitude)
           this.$set(this.temperatures,0,res.data.temperature1)
@@ -107,11 +101,6 @@
           this.$set(this.humidity,4,res.data.humidity5)
           this.$set(this.humidity,5,res.data.humidity6)
           this.$set(this.humidity,6,res.data.humidity7)
-          // console.log(JSON.stringify(this.carPosition));
-          // this.carPosition = JSON.stringify(this.carPosition)
-          // console.log(this.carPosition);
-          // this.carPosition = JSON.parse(this.carPosition)
-          // console.log(JSON.stringify(this.carPosition));
         })
       },
       getAllCarState(){
