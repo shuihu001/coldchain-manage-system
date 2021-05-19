@@ -1,8 +1,7 @@
 <template>
   <div class="all-info">
     <div class="car-position">
-<!--      <latest-track :latest-point="carPosition"></latest-track>-->
-      <latest-track :order-id="orderData.id" :key="orderData.id"></latest-track>
+      <latest-position :order-id="orderData.id" :key="orderData.id"></latest-position>
     </div>
     <div class="goods-video">
       <good-video :video-url = "orderData.videoHttpBack"></good-video>
@@ -20,8 +19,7 @@
 </template>
 
 <script>
-  import LatestTrack from "./LatestTrack";
-  import carTrack from "../../components/content/orderDetails/carTrack";
+  import LatestPosition from "./LatestPosition";
   import allSensors from "components/content/orderDetails/allSensors";
   import tempLine from "components/content/orderDetails/tempLine";
   import humiLine from "../../components/content/orderDetails/humiLine";
@@ -33,8 +31,7 @@
   export default {
     name: "processingOrdersDetail",
     components: {
-      LatestTrack,
-      carTrack,
+      LatestPosition,
       allSensors,
       tempLine,
       humiLine,

@@ -22,7 +22,6 @@
 </template>
 
 <script>
-  import carPosition from "components/content/orderDetails/carPosition";
   import carTrack from "../../components/content/orderDetails/carTrack";
   import allSensors from "components/content/orderDetails/allSensors";
   import tempLine from "components/content/orderDetails/tempLine";
@@ -34,9 +33,8 @@
   import {getDriver, getCarState, getErrorOrderData} from "../../network/requestDatas";
 
   export default {
-    name: "errorOrdersDetails",
+    name: "errorOrdersDetail",
     components:{
-      carPosition,
       carTrack,
       allSensors,
       tempLine,

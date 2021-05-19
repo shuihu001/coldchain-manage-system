@@ -8,7 +8,7 @@
   import { getCarState, getLatestCarState } from "../../network/requestDatas";
   import AMap from 'AMap'
   export default {
-    name: "LatestTrack",
+    name: "LatestPosition",
     props:{
       orderId:{
         type:Number,
@@ -28,17 +28,27 @@
       console.log(this.orderId+"创建了");
       this.getPositions(this.orderId)
       this.timer = setInterval( () => {
+        this.mapDemo = null
         this.getLatestPosition(this.orderId)
       },10*1000)
+      this.$once('hook:beforeDestroy',() => {
+        clearInterval(this.timer)
+        this.mapDemo = null
+        console.log("定时器被销毁");
+      })
     },
-    // activated() {
-    //   console.log(this.orderId+"活跃了");
-    // },
+    mounted() {
+
+    },
     // deactivated() {
-    //   // this.mapDemo = null
-    //   // clearInterval(this.timer)
-    //   // this.timer = null
+    //   this.mapDemo = null
+    //   clearInterval(this.timer)
+    //   this.timer = null
     //   console.log(this.orderId+"不活跃了");
+    // },
+    // beforeDestroy() {
+    //   clearInterval(this.timer)
+    //   this.timer = null
     // },
     destroyed() {
       console.log(this.orderId+"被销毁了");
@@ -46,12 +56,15 @@
       this.timer = null
     },
     watch:{
-      orderId(){
-        this.getPositions(this.orderId)
-        this.timer = setInterval(() => {
-          this.getLatestPosition(this.orderId)
-        },60*1000)
-      }
+      // orderId(){
+      //   console.log("id变了");
+      //   console.log("id变了");
+      //   console.log(this.orderId+"监听器");
+      //   this.getPositions(this.orderId)
+      //   this.timer = setInterval(() => {
+      //     this.getLatestPosition(this.orderId)
+      //   },60*1000)
+      // }
     },
     methods:{
       getPositions(id){
@@ -123,6 +136,8 @@
             AMap.convertFrom(segPoint,'gps',  function (status,result) {
               if(result.info == 'ok') {
                 console.log(result.locations);
+                console.log(that.orderId);
+                console.log(that.timer);
                 that.mapDemo = new AMap.Map('container',{
                   zoom:13
                 })

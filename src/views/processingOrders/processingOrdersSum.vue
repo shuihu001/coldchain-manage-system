@@ -39,7 +39,7 @@
 import oneOrder from '../../components/content/oneOrder'
 import { getOrders } from '../../network/requestDatas';
 export default {
-    name: 'processingOrderSum',
+    name: 'processingOrdersSum',
     data() {
         return {
             query: {
@@ -79,6 +79,7 @@ export default {
         },
         getOrderData(completeState){
           getOrders(completeState).then(res =>{
+            console.log(res.data);
             this.orderData = res.data;
             if (this.query.name !== '') {
               this.orderData = this.orderData.filter(item => item.id.toString().match(this.query.name) || item.starting.match(this.query.name) || item.destination.match(this.query.name));

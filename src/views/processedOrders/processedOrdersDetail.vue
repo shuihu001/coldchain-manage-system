@@ -1,7 +1,7 @@
 <template>
   <div class="all-info">
     <div class="car-position">
-      <car-track :points = "carPosition"></car-track>
+      <car-track :points = "carPosition" :key="orderData.id"></car-track>
     </div>
     <div class="temp-line">
       <temp-line :temperature = "temperatures" :create-time = "createTime"></temp-line>
@@ -22,7 +22,6 @@
 </template>
 
 <script>
-  import carPosition from "components/content/orderDetails/carPosition";
   import carTrack from "../../components/content/orderDetails/carTrack";
   import allSensors from "components/content/orderDetails/allSensors";
   import tempLine from "components/content/orderDetails/tempLine";
@@ -34,9 +33,8 @@
   import {getDriver, getCarState} from "../../network/requestDatas";
 
   export default {
-    name: "processedOrdersDetail1",
+    name: "processedOrdersDetail",
     components:{
-      carPosition,
       carTrack,
       allSensors,
       tempLine,
@@ -72,13 +70,13 @@
       }
     },
     created() {
-      console.log(this.$route);
+      // console.log(this.$route);
       this.orderData = JSON.parse(this.$route.query.order)
       this.getDriverInfo()
       this.getCarStateData(this.orderData.id)
     },
-    mounted() {
-
+    destroyed() {
+      console.log("被销毁了");
     },
     watch:{
       '$route'(to,from){

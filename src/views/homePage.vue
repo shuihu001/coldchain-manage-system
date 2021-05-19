@@ -37,7 +37,7 @@ import AMap from 'AMap'
 import { getOrders, getCarState, getLatestCarState, errData, fetchData } from '../network/requestDatas'
 import Vue from 'vue'
 export default {
-  name: 'homepage',
+  name: 'homePage',
   components: {
     Schart
   },

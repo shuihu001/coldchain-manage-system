@@ -30,7 +30,7 @@ import oneOrder from '../../components/content/oneOrder'
 import { getErrorOrders, getOrders } from "../../network/requestDatas";
 // import {fetchData, getDriver, getErrorOrders, getOrders} from '../../api/index';
 export default {
-    name: 'errorOrderSum',
+    name: 'errorOrdersSum',
     data() {
         return {
             query: {

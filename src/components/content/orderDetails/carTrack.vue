@@ -1,5 +1,5 @@
 <template>
-  <div id="container">
+  <div id="map-container">
 
   </div>
 </template>
@@ -42,16 +42,28 @@
     },
     watch:{
       points(){
-        this.drawTrack(this.points, this.errorPoints)
+        console.log(this.points);
+        setTimeout(() => {
+          this.drawTrack(this.points, this.errorPoints)
+        })
       }
     },
+    created() {
+
+    },
     mounted() {
-      this.drawTrack(this.points, this.errorPoints)
+      // console.log("创建了");
+      // console.log(JSON.parse(JSON.stringify(this.points)));
+      // this.drawTrack(this.points, this.errorPoints)
+      // console.log("在created成功了");
+    },
+    destroyed() {
+      console.log("被破坏了");
     },
     methods:{
       drawTrack(points,errorPoint){
         const that = this
-         this.mapDemo = new AMap.Map('container',{
+         this.mapDemo = new AMap.Map('map-container',{
           zoom:14
         })
         this.mapDemo.setMapStyle('amap://styles/macaron')
@@ -65,6 +77,7 @@
         }
         const numMAX = 39
         let time = Math.ceil(points.length/numMAX)
+        // console.log(JSON.parse(JSON.stringify(points)));
         for( let i=1; i<=time; i++){
           let segPoint = []
           for(let j=(i-1)*numMAX; j <= i*numMAX ;j++){
@@ -72,13 +85,10 @@
               segPoint.push(points[j])
             }
           }
+          // console.log(JSON.parse(JSON.stringify(points)));
           AMap.convertFrom(segPoint,'gps',  function (status,result) {
             if(result.info == 'ok') {
-              console.log(result.locations);
-              that.mapDemo = new AMap.Map('container',{
-                zoom:13
-              })
-              that.mapDemo.setMapStyle('amap://styles/macaron')
+              // console.log(JSON.parse(JSON.stringify(result.locations)));
               let polyLine = new AMap.Polyline({
                 path: result.locations,
                 isOutline: false,
@@ -103,7 +113,7 @@
 </script>
 
 <style scoped>
-  #container{
+  #map-container{
     width: 100%;
     height: 100%;
   }

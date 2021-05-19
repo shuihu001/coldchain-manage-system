@@ -14,6 +14,7 @@
 //例如：import 《组件名称》 from '《组件路径》';
 import video from "../../components/common/video"
 export default {
+  name:'goodVideo',
 //import引入的组件需要注入到对象中才能使用
 // import video from "";
 components: {
