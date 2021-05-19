@@ -42,7 +42,7 @@
     },
     watch:{
       points(){
-        console.log(this.points);
+        console.log(JSON.parse(JSON.stringify(this.points)));
         setTimeout(() => {
           this.drawTrack(this.points, this.errorPoints)
         })

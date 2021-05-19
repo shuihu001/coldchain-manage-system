@@ -3,21 +3,29 @@
     <div class="car-position">
       <car-track :points = "carPosition" :errorPoints = "errorPoints"></car-track>
     </div>
-    <div class="temp-line">
-      <tempLine :temperature = "temperatures" :create-time = "createTime"></tempLine>
-    </div>
-    <div class="humi-line">
-      <humi-Line :humidity = "humidity" :create-time = "createTime"></humi-Line>
+    <div class="goods-info">
+      <goods-info :goods-info = "orderData"></goods-info>
     </div>
     <div class="driver-info">
       <driver-info :driver-info = "driverData"></driver-info>
     </div>
-    <div class="goods-info">
-      <goods-info :goods-info = "orderData"></goods-info>
+    <div class="temp-line">
+      <temp-line :temperature = "temperatures" :create-time = "createTime"></temp-line>
     </div>
-    <div class="goods-video">
-      <good-video :video-url = "orderData.videoHttpBack"></good-video>
+    <div class="humi-line">
+      <humi-Line :humidity = "humidity" :create-time = "createTime"></humi-Line>
     </div>
+    <div class="average-temperature">
+      <average-temperature :average-temperature = "averageTemperature" :create-time = "createTime"></average-temperature>
+    </div>
+    <div class="average-humidity">
+      <average-humidity :average-humidity = "averageHumidity" :create-time = "createTime"></average-humidity>
+    </div>
+
+
+<!--    <div class="goods-video">-->
+<!--      <good-video :video-url = "orderData.videoHttpBack"></good-video>-->
+<!--    </div>-->
   </div>
 </template>
 
@@ -29,6 +37,8 @@
   import driverInfo from "components/content/orderDetails/driverInfo";
   import goodsInfo from "components/content/orderDetails/goodsInfo";
   import goodVideo from "../../components/content/orderDetails/goodVideo";
+  import averageTemperature from "../../components/content/orderDetails/averageTemperature";
+  import averageHumidity from "../../components/content/orderDetails/averageHumidity";
 
   import {getDriver, getCarState, getErrorOrderData} from "../../network/requestDatas";
 
@@ -41,7 +51,9 @@
       humiLine,
       driverInfo,
       goodsInfo,
-      goodVideo
+      goodVideo,
+      averageTemperature,
+      averageHumidity
     },
     data(){
       return{
@@ -59,6 +71,7 @@
           temperature6:[],
           temperature7:[],
         },
+        averageTemperature:[],
         humidity:{
           humidity1:[],
           humidity2:[],
@@ -68,6 +81,7 @@
           humidity6:[],
           humidity7:[],
         },
+        averageHumidity:[],
       }
     },
     created() {
@@ -105,6 +119,8 @@
           this.carPosition = []
           // this.errorPoints = []
           this.createTime = []
+          this.averageTemperature = []
+          this.averageHumidity = []
           for(let index in this.temperatures){
             this.temperatures[index] = []
           }
@@ -124,6 +140,7 @@
             this.temperatures.temperature5.push(state.temperature5)
             this.temperatures.temperature6.push(state.temperature6)
             this.temperatures.temperature7.push(state.temperature7)
+            this.averageTemperature.push((state.temperature1*1 + state.temperature2*1 + state.temperature3*1 + state.temperature4*1 + state.temperature5*1 + state.temperature6*1 + state.temperature7*1)/7)
             this.humidity.humidity1.push(state.humidity1)
             this.humidity.humidity2.push(state.humidity2)
             this.humidity.humidity3.push(state.humidity3)
@@ -131,6 +148,7 @@
             this.humidity.humidity5.push(state.humidity5)
             this.humidity.humidity6.push(state.humidity6)
             this.humidity.humidity7.push(state.humidity7)
+            this.averageHumidity.push((state.humidity1*1 + state.humidity2*1 + state.humidity3*1 + state.humidity4*1 + state.humidity5*1 + state.humidity6*1 + state.humidity7*1)/7)
           }
           console.log(this.carPosition);
           console.log(this.createTime);
@@ -167,25 +185,40 @@
     float: left;
   }
   .temp-line,.humi-line{
+    width: 49%;
+    height: 300px;
+    float: left;
+    margin-left: 5px;
+    margin-bottom: 10px;
+  }
+  .goods-info,.driver-info{
     width: 33%;
     height: 200px;
     float: right;
     margin-left: 5px;
     margin-bottom: 10px;
-  }
-  .driver-info{
-    width: 33%;
-    height: 215px;
-    float: left;
     background-color: #fff;
-    margin-right: 3px;
   }
-  .goods-info{
-    width: 33%;
-    height: 215px;
-    background-color: #fff;
+  .average-temperature,.average-humidity{
+    width: 49%;
+    height: 300px;
     float: left;
+    margin-left: 5px;
+    margin-bottom: 10px;
   }
+  /*.driver-info{*/
+  /*  width: 33%;*/
+  /*  height: 215px;*/
+  /*  float: left;*/
+  /*  background-color: #fff;*/
+  /*  margin-right: 3px;*/
+  /*}*/
+  /*.goods-info{*/
+  /*  width: 33%;*/
+  /*  height: 215px;*/
+  /*  background-color: #fff;*/
+  /*  float: left;*/
+  /*}*/
   .goods-video{
     width: 33%;
     height: 200px;
