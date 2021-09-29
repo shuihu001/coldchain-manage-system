@@ -32,6 +32,7 @@ const service = axios.create({
   // easy-mock服务挂了，暂时不使用了
   // baseURL: 'https://www.easy-mock.com/mock/592501a391470c0ac1fab128',
   baseURL: "http://8.140.21.128:8447",
+  // baseURL: "http://192.168.8.101:8447",
   timeout: 5000
 });
 

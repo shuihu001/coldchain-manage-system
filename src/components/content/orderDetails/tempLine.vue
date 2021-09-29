@@ -58,7 +58,7 @@
           //设置grid是设置图表与父元素div块之间边界，让图标尽可能占满整个div块
           grid:{
             top:"40px",
-            bottom:"30px",
+            bottom:"35px",
             left:"40px",
             right:"45px"
           },
@@ -66,7 +66,7 @@
             name:"时间",
             type: 'category',
             // data:['13:25:20','13:30:20','13:35:20','13:40:20','13:45:20','13:50:20','13:55:20','14:00:20','14:05:20','14:10:20','14:15:20','14:20:20','14:25:20']
-            data:createTime
+            data:createTime.map(time => { return time.replace("T","\n")})
           },
           yAxis: {
             name:"温度（°C）",

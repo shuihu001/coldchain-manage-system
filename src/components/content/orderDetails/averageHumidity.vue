@@ -58,15 +58,16 @@
           // },
           grid: {
             left: '3%',
-            right: '4%',
+            right: '7%',
             bottom: '3%',
             containLabel: true
           },
           xAxis: [
             {
+              name:"时间",
               type: 'category',
               boundaryGap: false,
-              data: createTime
+              data: createTime.map(time => { return time.replace("T","\n")})
             }
           ],
           yAxis: [

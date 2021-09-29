@@ -165,7 +165,10 @@ export default {
   created() {
     this.getXlable();
     this.getData();
-    this.drawAllTracks();
+    setTimeout(() => {
+      this.drawAllTracks();
+    })
+
     // getOrders(3).then( async res => {
     //   for (let order of res.data){
     //     await getCarState(order.id).then(res => {
@@ -376,6 +379,10 @@ export default {
       this.myStack.setOption(this.options2);
     },
     drawAllTracks(){
+      this.mapDemo = new AMap.Map('container',{
+        zoom:13
+      })
+      this.mapDemo.setMapStyle('amap://styles/macaron')
       const that = this
       getOrders(3).then( async res => {
         console.log(res.data);
@@ -400,13 +407,9 @@ export default {
                   segPoint.push(path[j])
                 }
               }
-              AMap.convertFrom(segPoint,'gps',  function (status,result) {
+              AMap.convertFrom(segPoint,'gps', function (status,result) {
                 if(result.info == 'ok') {
                   console.log(result.locations);
-                  that.mapDemo = new AMap.Map('container',{
-                    zoom:13
-                  })
-                  that.mapDemo.setMapStyle('amap://styles/macaron')
                   let polyLine = new AMap.Polyline({
                     path: result.locations,
                     isOutline: false,

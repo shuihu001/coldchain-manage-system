@@ -77,10 +77,12 @@ export default {
         //     });
         // },
       getProcessedOrderData(completeState){
+          console.log(completeState);
         getOrders(completeState).then(res =>{
-          this.orderData = res.data.filter(item => item.alert == 0)
+            console.log(res);
+          this.orderData = res.data.reverse()
           if (this.query.name !== ''){
-            this.orderData = this.orderData.filter(item => item.id.toString().match(this.query.name) || item.starting.match(this.query.name) || item.destination.match(this.query.name));
+            this.orderData = this.orderData.filter(item => item.id.toString().match(this.query.name) || item.starting.match(this.query.name) || item.destination.match(this.query.name)).reverse();
           }
         }).catch(err => {
           console.log(err);

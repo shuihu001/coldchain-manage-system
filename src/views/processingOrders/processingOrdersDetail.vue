@@ -4,7 +4,8 @@
       <latest-position :order-id="orderData.id" :key="orderData.id"></latest-position>
     </div>
     <div class="goods-video">
-      <good-video :video-url = "orderData.videoHttpBack"></good-video>
+<!--      <good-video :video-url = "orderData.videoHttpBack"></good-video>-->
+      <good-video :video-url = "URL"></good-video>
     </div>
     <div class="driver-info">
       <driverInfo :driver-info = "driverData"></driverInfo>
@@ -41,6 +42,7 @@
     },
     data() {
       return{
+        URL:"http://ivi.bupt.edu.cn/hls/cctv1hd.m3u8",
         orderData:{},
         driverData:{},
         carPosition:[],

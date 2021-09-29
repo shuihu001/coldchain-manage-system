@@ -63,7 +63,7 @@
     methods:{
       drawTrack(points,errorPoint){
         const that = this
-         this.mapDemo = new AMap.Map('map-container',{
+        this.mapDemo = new AMap.Map('map-container',{
           zoom:14
         })
         this.mapDemo.setMapStyle('amap://styles/macaron')

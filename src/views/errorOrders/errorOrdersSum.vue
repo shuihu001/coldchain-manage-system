@@ -101,10 +101,11 @@ export default {
                 this.orderData.push(order)
               }
             }
+            this.orderData = this.orderData.reverse()
             // this.orderData.push(...res.data)
             console.log(res.data);
             if (this.query.name !== ''){
-              this.orderData = this.orderData.filter(item => item.id.toString().match(this.query.name) || item.starting.match(this.query.name) || item.destination.match(this.query.name));
+              this.orderData = this.orderData.filter(item => item.id.toString().match(this.query.name) || item.starting.match(this.query.name) || item.destination.match(this.query.name)).reverse();
             }
           }).catch()
       },

@@ -131,7 +131,7 @@
             this.$set(point,0,state.longitude)
             this.$set(point,1,state.latitude)
             this.carPosition.push(point)
-            this.createTime.push(state.createTime.slice(11))
+            this.createTime.push(state.createTime)
             this.temperatures.temperature1.push(state.temperature1)
             this.temperatures.temperature2.push(state.temperature2)
             this.temperatures.temperature3.push(state.temperature3)

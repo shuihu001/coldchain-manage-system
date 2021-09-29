@@ -4,8 +4,8 @@ export function getOrders(completeState) {
   return request({
     url:"/api/display/goodOrder",
     method:"post",
-    params:{
-      completeState:completeState
+    data:{
+      completeState
     }
   })
 }
@@ -17,7 +17,7 @@ export function getDriver(driverId) {
     url:"/api/display/driver",
     // params:""
     data:{
-      "driverId":driverId
+      driverId
     }
   })
 }
@@ -49,7 +49,7 @@ export function getLatestCarState(orderId) {
     url:"/api/send/carState",
     method:"post",
     data:{
-      "orderId":orderId
+      orderId
     }
   })
 }
@@ -68,8 +68,8 @@ export function getErrorOrderData(orderId) {
   return request({
     url:"api/errorOrder/anOrder",
     method:"post",
-    params:{
-      orderId:orderId
+    data:{
+      orderId
     }
   })
 }
