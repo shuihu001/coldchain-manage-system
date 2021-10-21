@@ -62,6 +62,9 @@
             left:"40px",
             right:"45px"
           },
+          legend: {
+            data: ['设备1', '设备2', '设备3', '设备4', '设备5', '设备6']
+          },
           xAxis: {
             name:"时间",
             type: 'category',
@@ -75,31 +78,37 @@
           series: [{
             // data: [2,2.5,1.9,1.8,0.6,3.2,3.6,-2,-1.4,1.6,2.0,4.5,0.3,2.0],
             data: temperature.temperature1,
-            type: 'line'
+            type: 'line',
+            name: '设备1'
           },{
             data: temperature.temperature2,
-            type: 'line'
+            type: 'line',
+            name: '设备2'
           },{
             data: temperature.temperature3,
-            type: 'line'
+            type: 'line',
+            name: '设备3'
           },{
             data: temperature.temperature4,
-            type: 'line'
+            type: 'line',
+            name: '设备4'
           },{
             data: temperature.temperature5,
-            type: 'line'
+            type: 'line',
+            name: '设备5'
           },{
             data: temperature.temperature6,
-            type: 'line'
+            type: 'line',
+            name: '设备6'
           },{
             data: temperature.temperature7,
-            type: 'line'
+            type: 'line',
+            name: '设备1'
           }
           ]
         };
         option && this.myChart.setOption(option);
       },
-
     },
   }
 </script>

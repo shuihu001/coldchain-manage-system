@@ -20,8 +20,8 @@
 
         </td>
 				<td>
-          <p>创建时间</p>
-          <p>{{ this.oneOrder.createTime }}</p>
+          <p>出发时间</p>
+          <p>{{ this.oneOrder.date }}</p>
         </td>
 				<td></td>
 				<td rowspan="3">

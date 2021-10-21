@@ -8,7 +8,7 @@
         </caption>
         <th>序号</th>
         <th>值</th>
-        <tr v-for="(temp,index) in temperatures">
+        <tr v-for="(temp,index) in temperatures" :key="index">
           <td>{{ index+1 }}</td>
           <td>{{ temp }}</td>
         </tr>
@@ -98,7 +98,7 @@
         <caption>湿度&nbsp;&nbsp;%</caption>
         <th>序号</th>
         <th>值</th>
-        <tr v-for="(humi,index) in humidity">
+        <tr v-for="(humi,index) in humidity" :key="index">
           <td>{{ index+1 }}</td>
           <td>{{ humi }}</td>
         </tr>

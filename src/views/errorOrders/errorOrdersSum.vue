@@ -96,17 +96,12 @@ export default {
       // },
       getErrorOrderDatas(){
           getOrders(5).then(res=> {
-            for(let order of res.data){
-              if(order.alert == 1 || order.alert == 2 || order.alert == 3){
-                this.orderData.push(order)
-              }
-            }
-            this.orderData = this.orderData.reverse()
-            // this.orderData.push(...res.data)
-            console.log(res.data);
             if (this.query.name !== ''){
-              this.orderData = this.orderData.filter(item => item.id.toString().match(this.query.name) || item.starting.match(this.query.name) || item.destination.match(this.query.name)).reverse();
+              this.orderData = res.data.filter(item => item.id.toString().match(this.query.name) || item.starting.match(this.query.name) || item.destination.match(this.query.name)).reverse()
+            }else {
+                this.orderData = res.data.reverse()
             }
+            this.orderData = this.orderData.filter(item => item.alert == 1 || item.alert == 2 || item.alert == 3 )
           }).catch()
       },
         // getErrorOrderDatas(){

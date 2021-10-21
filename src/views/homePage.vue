@@ -68,8 +68,8 @@ export default {
         },
         labels: ['温度异常','湿度异常','开关门异常'],
         datasets: [{
-            data: [],
-          }]
+          data: [],
+        }]
       },
       options2: {
         title: {
@@ -217,7 +217,7 @@ export default {
     setTimeout(() =>{
       this.drawLine()
       // this.drawTrack(this.lines)
-    },200)
+    },500)
   },
   deactivated() {
     clearInterval(this.timer)
@@ -236,13 +236,13 @@ export default {
     },
     getData() {
       //map
-      getOrders(5).then(res => {
-        // console.log(res);
-        for (let n = 0; n < res.data.length; n++) {
-          Vue.set(this.pos,n, res.data[n].pos);
-          // console.log(res.data[n].pos);
-        }
-      })
+      // getOrders(5).then(res => {
+      //   console.log(res.data);
+      //   for (let n = 0; n < res.data.length; n++) {
+      //     Vue.set(this.pos,n, res.data[n].pos);
+      //     console.log(res.data[n].pos);
+      //   }
+      // })
       getOrders(5).then(res => {
         // console.log(res.data);
         this.temp = res.data;

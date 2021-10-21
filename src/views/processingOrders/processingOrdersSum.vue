@@ -79,10 +79,10 @@ export default {
         },
         getOrderData(completeState){
           getOrders(completeState).then(res =>{
-            console.log(res.data);
-            this.orderData = res.data;
-            if (this.query.name !== '') {
-              this.orderData = this.orderData.filter(item => item.id.toString().match(this.query.name) || item.starting.match(this.query.name) || item.destination.match(this.query.name));
+            if (this.query.name !== ''){
+                this.orderData = res.data.filter(item => item.id.toString().match(this.query.name) || item.starting.match(this.query.name) || item.destination.match(this.query.name)).reverse();
+            }else {
+                this.orderData = res.data.reverse()
             }
           }).catch(err => {
             console.log(err);
