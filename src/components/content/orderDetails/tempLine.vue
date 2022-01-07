@@ -29,6 +29,11 @@
     },
     created() {
       bus.$on('collapse',(val) => this.collapse = !val)
+      // this.createTime = this.createTime.map((time) => {
+      //     let date = new Date(time)
+      //     let targetTime = new Date(date.getTime() + 8*60*60*1000)
+      //     return targetTime.getFullYear()+"-"+ (targetTime.getMonth()+1).toString() +"-"+targetTime.getDate()+" "+targetTime.getHours()+":"+targetTime.getMinutes()+":"+targetTime.getSeconds()
+      // })
     },
     watch:{
       // collapse(){
@@ -39,6 +44,8 @@
         this.drawLine(this.createTime,this.temperature)
       },
       createTime(){
+        
+        // console.log(this.createTime);
         // console.log("时间变了");
         this.drawLine(this.createTime,this.temperature)
       }
@@ -69,7 +76,7 @@
             name:"时间",
             type: 'category',
             // data:['13:25:20','13:30:20','13:35:20','13:40:20','13:45:20','13:50:20','13:55:20','14:00:20','14:05:20','14:10:20','14:15:20','14:20:20','14:25:20']
-            data:createTime.map(time => { return time.replace("T","\n")})
+            data:createTime.map(time => { return time.replace(" ","\n")})
           },
           yAxis: {
             name:"温度（°C）",

@@ -163,52 +163,16 @@ export default {
     }
   },
   created() {
+    console.log(this.$store.state.userName);
+    console.log(this.$store.state.userKind);
     this.getXlable();
     this.getData();
     setTimeout(() => {
       this.drawAllTracks();
     })
-
-    // getOrders(3).then( async res => {
-    //   for (let order of res.data){
-    //     await getCarState(order.id).then(res => {
-    //       let  path = []
-    //       for(let record of res.data){
-    //         let point = []
-    //         if(record.longitude !== null  && record.latitude !== null){
-    //           this.$set(point,0,record.longitude)
-    //           this.$set(point,1,record.latitude)
-    //           path.push(point)
-    //         }
-    //       }
-    //       let line = {id:'',path:[]}
-    //       this.$set(line,"id",order.id)
-    //       this.$set(line,"path",path)
-    //       this.lines.push(line)
-    //     }).catch(err => {
-    //       console.log(err);
-    //     })
-    //   }
-    // })
     this.timer = setInterval(() => {
       this.drawAllTracks();
     },60*1000)
-    // this.timer = setInterval(async () => {
-    //   for (let line of this.lines){
-    //     await getLatestCarState(line.id).then(res => {
-    //       if(res.data.longitude !== null  && res.data.latitude !== null){
-    //         let point = new AMap.LngLat(res.data.longitude,res.data.latitude)
-    //         line.path.push(point)
-    //       }
-    //     }).catch(err => {
-    //       console.log(err);
-    //     })
-    //   }
-    //   setTimeout(() => {
-    //     this.drawTrack(this.lines)
-    //     console.log("更新了一次");
-    //   },200)
-    // },60*1000)
   },
   destroyed() {
     console.log("被破坏了");
@@ -235,14 +199,6 @@ export default {
       }
     },
     getData() {
-      //map
-      // getOrders(5).then(res => {
-      //   console.log(res.data);
-      //   for (let n = 0; n < res.data.length; n++) {
-      //     Vue.set(this.pos,n, res.data[n].pos);
-      //     console.log(res.data[n].pos);
-      //   }
-      // })
       getOrders(5).then(res => {
         // console.log(res.data);
         this.temp = res.data;
@@ -341,7 +297,8 @@ export default {
       //   image: require('../assets/img/mark.png'),//自定义icon
       //   size: new AMap.Size(25, 25)//icon的大小
       // });
-      mapDemo.setMapStyle('amap://styles/normal');
+      mapDemo.setMapStyle("amap://styles/34cc8111bfbee05b8d29bbe6cebabc20");
+      // mapDemo.setMapStyle('amap://styles/normal');
       for (let p = 0; p < this.pos.length; p++) {
         let marker = new AMap.Marker({ //点图标
           position: this.pos[p],
@@ -382,7 +339,8 @@ export default {
       this.mapDemo = new AMap.Map('container',{
         zoom:13
       })
-      this.mapDemo.setMapStyle('amap://styles/macaron')
+      // this.mapDemo.setMapStyle('amap://styles/macaron')
+      this.mapDemo.setMapStyle("amap://styles/34cc8111bfbee05b8d29bbe6cebabc20");
       const that = this
       getOrders(3).then( async res => {
         console.log(res.data);
@@ -441,7 +399,8 @@ export default {
         image:this.startingPoint,
         imageSize:new AMap.Size(30,30),
       })
-      mapDemo.setMapStyle('amap://styles/macaron')
+      // mapDemo.setMapStyle('amap://styles/macaron')
+      mapDemo.setMapStyle("amap://styles/34cc8111bfbee05b8d29bbe6cebabc20");
       for(let path of paths){
         let marker = new AMap.Marker({
           position:path.path[0],

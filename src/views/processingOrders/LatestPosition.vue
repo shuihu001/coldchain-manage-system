@@ -24,22 +24,22 @@
         path:[]
       }
     },
-    created() {
+    mounted() {
       console.log(this.orderId+"创建了");
       this.getPositions(this.orderId)
       this.timer = setInterval( () => {
         this.mapDemo = null
         this.getLatestPosition(this.orderId)
-      },10*1000)
+      },60*1000)
       this.$once('hook:beforeDestroy',() => {
         clearInterval(this.timer)
         this.mapDemo = null
         console.log("定时器被销毁");
       })
     },
-    mounted() {
+    // mounted() {
 
-    },
+    // },
     // deactivated() {
     //   this.mapDemo = null
     //   clearInterval(this.timer)
@@ -70,15 +70,18 @@
       getPositions(id){
         const that = this
         getCarState(id).then(async res => {
-          // this.path = []
           for(let record of await res.data){
             let point = []
-            if(record.longitude !== null  && record.latitude !== null){
+            if(record.longitude > 0  && record.latitude > 0){
               this.$set(point,0,record.longitude)
               this.$set(point,1,record.latitude)
               this.path.push(point)
             }
           }
+          that.mapDemo = new AMap.Map('container',{
+            zoom:13
+          })
+          that.mapDemo.setMapStyle('amap://styles/macaron')
           const numMAX = 39
           let time = Math.ceil(this.path.length / numMAX)
           for (let i = 1; i <= time; i++) {
@@ -90,11 +93,7 @@
             }
             AMap.convertFrom(segPoint,'gps',  function (status,result) {
               if(result.info == 'ok') {
-                console.log(result.locations);
-                that.mapDemo = new AMap.Map('container',{
-                  zoom:13
-                })
-                that.mapDemo.setMapStyle('amap://styles/macaron')
+                
                 let polyLine = new AMap.Polyline({
                   path: result.locations,
                   isOutline: false,
@@ -120,7 +119,7 @@
       getLatestPosition(id){
         const that = this
         getLatestCarState(id).then(res => {
-          if(res.data.longitude !== null  && res.data.latitude !== null){
+          if(res.data.longitude > 0  && res.data.latitude > 0){
             let point = new AMap.LngLat(res.data.longitude,res.data.latitude)
             this.path.push(point)
           }

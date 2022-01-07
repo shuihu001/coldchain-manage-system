@@ -66,19 +66,22 @@
 
 <template>
   <div class="liveView">
-    <video-player class="vjs-custom-skin"
+    <video ref="goodVideo" controls muted width="100%" height="100%"></video>
+    <!-- <video-player class="vjs-custom-skin"
                   ref="videoPlayer"
                   :options="playerOptions"
                   @ready="onPlayerReadied"
                   :playsinline="playsinline">
-    </video-player>
+    </video-player> -->
   </div>
 </template>
 
 <script>
+  import flv from 'flv.js'
   import { videoPlayer } from 'vue-video-player'
   import 'video.js/dist/video-js.css'
   import 'vue-video-player/src/custom-theme.css'
+
   import 'videojs-contrib-hls'
 
   export default {
@@ -91,7 +94,7 @@
     },
     data () {
       return {
-        videoSrc:'http://ivi.bupt.edu.cn/hls/cctv1hd.m3u8',
+        // videoSrc:'http://ivi.bupt.edu.cn/hls/cctv1hd.m3u8',
         initialized: false,
         currentTech: '',
         streams: {
@@ -111,23 +114,35 @@
           sources: [
             {
               withCredentials: false,
-              type: 'application/x-mpegURL',
-              // type: 'video/mp4',
+              // type: 'application/x-mpegURL',
+              type: 'video/mp4',
               // src: 'https://krtxplay1.setrtmp.com/live/SSAA-099937-ABCFB.m3u8'
               // src: 'http://play.skwlljk.cn/vehicle/firstvideo.m3u8?auth_key=1621915224-0-0-14128134e55b3efa3b11a97e30470fe0'
               // src: 'http://vjs.zencdn.net/v/oceans.mp4'
+              src: 'http://coldchain-vehicle.oss-cn-beijing.aliyuncs.com/record/vehicle/secondVideo/2021-11-09-14-48-37_2021-11-09-14-49-52.mp4'
               // src: 'http://play.skwlljk.cn/vehicle/firstvideo.m3u8'
               // src: 'http://ivi.bupt.edu.cn/hls/cctv1hd.m3u8'
-              src: this.videoUrl
+              // src: this.videoUrl
               // src: 'https://play.skwlljk.cn/vehicle/firstvideo.m3u8'
             }
           ]
         }
       }
     },
+    watch: {
+      '$route' () {
+        console.log(this.videoUrl);
+        this.$nextTick(() => {
+          this.createVideo()
+        })
+      }
+    },
     created() {
-      // console.log(JSON.parse(JSON.stringify(this.video)));
       console.log(this.videoUrl);
+    },
+    mounted () {
+      console.log(this.videoUrl);
+      this.createVideo()
     },
     computed: {
       player () {
@@ -145,13 +160,28 @@
           // ios端
           return true
         }
-      }
+      },
+      // videoSrc () {
+      //   return this.order
+      // }
     },
     methods: {
       onPlayerReadied () {
         if (!this.initialized) {
           this.initialized = true
           this.currentTech = this.player.techName_
+        }
+      },
+      createVideo () {
+        if (flv.isSupported()) {
+          const videoElement = this.$refs.goodVideo
+          const flvPlayer = flv.createPlayer({
+            type: 'flv',
+            url: this.videoUrl
+          })
+          flvPlayer.attachMediaElement(videoElement)
+          flvPlayer.load()
+          flvPlayer.play()
         }
       },
     }

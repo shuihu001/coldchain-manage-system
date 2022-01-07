@@ -1,27 +1,51 @@
 <template>
-  <div>
-    <div class="driver-info">
+  <div style="height:100%">
+    <div class="good-info">
       <table>
         <caption>货物信息</caption>
         <tr>
           <td>订单编号</td>
-          <td>{{this.goodsInfo.id}}</td>
+          <td>{{goodsInfo.id}}</td>
         </tr>
         <tr>
           <td>货物类型</td>
-          <td>{{this.goodsInfo.goodKind}}</td>
+          <td>{{goodsInfo.goodKind}}</td>
         </tr>
         <tr>
           <td>出发地</td>
-          <td>{{this.goodsInfo.starting}}</td>
+          <td>{{goodsInfo.starting}}</td>
         </tr>
         <tr>
           <td>目的地</td>
-          <td>{{this.goodsInfo.destination}}</td>
+          <td>{{goodsInfo.destination}}</td>
+        </tr>
+        <tr>
+          <td>货物重量</td>
+          <td>{{goodsInfo.weight}}吨</td>
+        </tr>
+        <tr>
+          <td>货物数量</td>
+          <td>{{goodsInfo.quantity}}头</td>
+        </tr>
+        <tr>
+          <td>开门次数</td>
+          <td>{{goodsInfo.countDoor}}</td>
+        </tr>
+        <tr>
+          <td>司机姓名</td>
+          <td>{{goodsInfo.driverName}}</td>
+        </tr>
+        <tr>
+          <td>车牌号</td>
+          <td>{{goodsInfo.carId}}</td>
+        </tr>
+        <tr>
+          <td>出发时间</td>
+          <td>{{goodsInfo.date}}</td>
         </tr>
         <tr>
           <td>设备编号</td>
-          <td>{{this.goodsInfo.deviceId}}</td>
+          <td>{{goodsInfo.deviceId}}</td>
         </tr>
       </table>
     </div>
@@ -36,43 +60,50 @@
         // type:Object
       }
     },
-    data(){
-      return{
-        // goodsInfo: {
-        //   goodKind:'黑猪肉',
-        //   height:30,
-        //   creatorId:'-2~5',
-        //   deviceId:'70~80',
-        //   createTime:'2020-11-29 12:21:21',
-        //   starting:'河北省石家庄',
-        //   destination:'北京市昌平区',
-        // }
-      }
+    created() {
+      console.log(this.goodsInfo);
     }
   }
 </script>
 
 <style scoped>
-  table{
-    width: 380px;
+  .good-info{
     height: 100%;
+    width: 100%;
+    text-align: center;
+    box-sizing: border-box;
+    padding: 0 10px;
+  }
+  table{
+    width: 100%;
+    height: calc(100% - 48px);
     border-collapse: collapse;
-    margin: 0 auto;
+    /* margin: 0 auto; */
   }
   caption{
     width: 100%;
     height: 38px;
+    font-size: 16px;
+    font-weight: bold;
     text-align: center;
     line-height: 38px;
   }
   tr{
     width: 100%;
-    height: 21px;
+    font-size: 14px;
   }
-  th,td{
-    width: 150px;
-    height: 100%;
+  tr :first-child{
+    font-weight: bold;
+    width: 30%;
     text-align: center;
+  }
+  tr :last-child{
+    text-align: start;
+    padding-left: 15px;
+    width: 70%;
+  }
+  td{
+    /* text-align: center; */
     border: 1px solid #cccccc;
   }
 </style>

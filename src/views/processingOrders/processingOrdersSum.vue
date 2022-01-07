@@ -14,30 +14,29 @@
             </div>
 
             <one-order
-              v-for="oneOrder in orderData"
+              v-for="oneOrder in showOrderData"
               :one-order="oneOrder"
               :key="oneOrder.id"
               @detailSearch = "detailSearch(oneOrder)"
             >
             </one-order>
             <!-- 分页 -->
-            <!-- <div class="pagination">
-                <el-pagination
-                    background
-                    layout="total, prev, pager, next"
-                    :current-page="query.pageIndex"
-                    :page-size="query.pageSize"
-                    :total="pageTotal"
-                    @current-change="handlePageChange"
-                ></el-pagination>
-            </div> -->
+            <el-pagination
+                @size-change="handleSizeChange"
+                @current-change="handleCurrentChange"
+                :current-page="currentPage"
+                :page-sizes="[10, 20, 50, 100]"
+                :page-size="pageSize"
+                layout="total, sizes, prev, pager, next"
+                :total="orderData.length">
+            </el-pagination>
         </div>
     </div>
 </template>
 
 <script>
 import oneOrder from '../../components/content/oneOrder'
-import { getOrders } from '../../network/requestDatas';
+import { getOrders, getOrdersIncludeDriverName } from '../../network/requestDatas';
 export default {
     name: 'processingOrdersSum',
     data() {
@@ -57,13 +56,16 @@ export default {
             idx: -1,
             id: -1,
           orderData:[],
+          showOrderData: [],
+          currentPage: 1,
+          pageSize: 10,
         };
     },
     components: {
         'one-order': oneOrder,
     },
     created() {
-        this.getOrderData(3)
+        this.getOrderData(this.$store.state.userName, 3)
     },
     methods: {
         detailSearch(order) {
@@ -77,17 +79,44 @@ export default {
               }
             })
         },
-        getOrderData(completeState){
-          getOrders(completeState).then(res =>{
-            if (this.query.name !== ''){
-                this.orderData = res.data.filter(item => item.id.toString().match(this.query.name) || item.starting.match(this.query.name) || item.destination.match(this.query.name)).reverse();
-            }else {
-                this.orderData = res.data.reverse()
+        getOrderData(companyId, completeState){
+            console.log(companyId);
+            if(this.$store.state.userKind == 4){
+                getOrders(companyId, completeState).then(res =>{
+                    console.log(res);
+                    console.log(res.data);
+                    if (this.query.name !== ''){
+                        this.orderData = res.data.filter(item => item.id.toString().match(this.query.name) || item.starting.match(this.query.name) || item.destination.match(this.query.name)).reverse();
+                    }else {
+                        this.orderData = res.data.reverse()
+                    }
+                    this.showOrderData = this.orderData.slice((this.currentPage-1)*this.pageSize,this.currentPage*this.pageSize)
+                }).catch(err => {
+                    console.log(err);
+                })
+            }else{
+                getOrdersIncludeDriverName(companyId, completeState).then(res =>{
+                    console.log(res);
+                    console.log(res.data);
+                    if (this.query.name !== ''){
+                        this.orderData = res.data.filter(item => item.id.toString().match(this.query.name) || item.starting.match(this.query.name) || item.destination.match(this.query.name)).reverse();
+                    }else {
+                        this.orderData = res.data.reverse()
+                    }
+                    this.showOrderData = this.orderData.slice((this.currentPage-1)*this.pageSize,this.currentPage*this.pageSize)
+                }).catch(err => {
+                    console.log(err);
+                })
             }
-          }).catch(err => {
-            console.log(err);
-          })
         },
+        handleSizeChange(val){
+          this.pageSize = val
+          this.showOrderData = this.orderData.slice((this.currentPage-1)*this.pageSize,this.currentPage*this.pageSize)
+      },
+      handleCurrentChange(val){
+          this.currentPage = val
+          this.showOrderData = this.orderData.slice((this.currentPage-1)*this.pageSize,this.currentPage*this.pageSize)
+      },
         // 触发搜索按钮
         handleSearch() {
             // this.$set(this.query, 'pageIndex', 1);

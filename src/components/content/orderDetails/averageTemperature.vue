@@ -67,7 +67,7 @@
               name:"时间",
               type: 'category',
               boundaryGap: false,
-              data: createTime.map(time => { return time.replace("T","\n")})
+              data: createTime.map(time => { return time.replace(" ","\n")})
             }
           ],
           yAxis: [

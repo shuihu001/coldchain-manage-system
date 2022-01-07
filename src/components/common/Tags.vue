@@ -48,6 +48,8 @@
             closeAll(){
                 this.tagsList = [];
                 this.$router.push('/');
+                // this.$router.push(JSON.parse(sessionStorage.getItem("firstPage")).path);
+                // this.setTags(JSON.parse(sessionStorage.getItem("firstPage")))
             },
             // 关闭其他标签
             closeOther(){
@@ -80,7 +82,16 @@
         computed: {
             showTags() {
                 return this.tagsList.length > 0;
-            }
+            },
+            // firstPage() {
+            //     if(this.$store.state.userKind === 2){
+            //         return '/goverHomePage'
+            //     }else if(this.$store.state.userKind === 3){
+            //         return '/processingOrdersSum'
+            //     }else if(this.$store.state.userKind === 4){
+            //         return '/companyHomePage'
+            //     }
+            // }
         },
         watch:{
             $route(newValue, oldValue){
@@ -88,7 +99,9 @@
             }
         },
         created(){
+            console.log(this.$route);
             this.setTags(this.$route);
+            // sessionStorage.setItem("firstPage", JSON.stringify(fistPage))
             // 监听关闭当前页面的标签页
             bus.$on('close_current_tags', () => {
                 for (let i = 0, len = this.tagsList.length; i < len; i++) {

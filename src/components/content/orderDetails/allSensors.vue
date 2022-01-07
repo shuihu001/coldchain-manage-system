@@ -1,9 +1,9 @@
 <template>
   <div class="sensors">
-    <div class="temperature">
+    <div class="temperature" @click="centerDialogVisible = true">
       <table>
         <caption>
-          <span>温度&nbsp;&nbsp;℃</span>
+          <span>当前温度&nbsp;&nbsp;℃</span>
           <!-- <button class="button" @click="centerDialogVisible = true"></button> -->
         </caption>
         <th>序号</th>
@@ -95,7 +95,7 @@
     </el-dialog>
     <div class="humidity">
       <table>
-        <caption>湿度&nbsp;&nbsp;%</caption>
+        <caption>当前湿度&nbsp;&nbsp;%</caption>
         <th>序号</th>
         <th>值</th>
         <tr v-for="(humi,index) in humidity" :key="index">
@@ -120,8 +120,8 @@ export default {
   },
   data(){
     return{
-      temp:[3.0,3.5,3.2,2.7,2.9,3.7,3.2],
-      humi:[75.0,79.3,72.2,81.6,76.5,80.2,79.9],
+      // temp:[3.0,3.5,3.2,2.7,2.9,3.7,3.2],
+      // humi:[75.0,79.3,72.2,81.6,76.5,80.2,79.9],
       centerDialogVisible: false,
       image1:require('../../../assets/img/coldCar.jpg'),
       image2:require('../../../assets/img/car.jpg'),
@@ -133,24 +133,59 @@ export default {
 <style scoped>
   .sensors{
     width: 100%;
-    height: 210px;
+    height: 100%;
   }
   .temperature{
     width: 48%;
     height: 100%;
-    margin-right: 10px;
+    padding: 0 10px;
+    box-sizing: border-box;
+    margin-right: 15px;
     float: left;
     background-color: #fff;
   }
   .humidity{
     width: 48%;
     height: 100%;
+    padding: 0 10px;
+    box-sizing: border-box;
     float: left;
     background-color: #fff;
   }
   .button{
     width: 20px;
     height: 20px;
+  }
+  table{
+    width: 100%;
+    height: calc(100% - 48px);
+    /* border: 1px solid black; */
+    border-collapse: collapse;
+    /* margin:0 auto */
+  }
+  caption{
+    width: 100%;
+    height: 38px;
+    text-align: center;
+    font-size: 16px;
+    font-weight: bold;
+    line-height: 38px;
+  }
+  tr{
+    width: 100%;
+    font-size: 14px;
+  }
+  th{
+    height: 40px;
+    line-height: 40px;
+    border: 1px solid #cccccc;
+  }
+  td{
+    /* width: 150px; */
+    /* height: 100%; */
+    text-align: center;
+    font-size: 16px;
+    border: 1px solid #cccccc;
   }
   .car{
     height: 400px;
@@ -533,26 +568,5 @@ export default {
       transform: rotateX(30deg) rotateY(-180deg) rotateZ(0deg);
     }
   }
-  table{
-    width: 180px;
-    border: 1px solid black;
-    border-collapse: collapse;
-    margin:0 auto
-  }
-  caption{
-    width: 100%;
-    height: 38px;
-    text-align: center;
-    line-height: 38px;
-  }
-  tr{
-    width: 100%;
-    height: 21px;
-  }
-  th,td{
-    width: 150px;
-    height: 100%;
-    text-align: center;
-    border: 1px solid #cccccc;
-  }
+
 </style>

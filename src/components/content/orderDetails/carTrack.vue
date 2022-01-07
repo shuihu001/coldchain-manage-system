@@ -6,6 +6,7 @@
 
 <script>
   import AMap from 'AMap'
+// import func from 'vue-editor-bridge';
   export default {
     name: "carTrack",
     props:{
@@ -25,6 +26,7 @@
     data(){
       return{
         mapDemo:null,
+        paths: []
         // points:[
         //    [117.635982, 36.696961]
         //   ,[117.635821, 36.697116]
@@ -67,6 +69,39 @@
           zoom:14
         })
         this.mapDemo.setMapStyle('amap://styles/macaron')
+        AMap.convertFrom(points[0],'gps',  function (status,result) {
+        if(result.info == 'ok') {
+          console.log(result.locations[0]);
+          const startIcon = new AMap.Icon({
+        // size: (60,60),
+            size: new AMap.Size(25, 34),
+            image: "https://webapi.amap.com/theme/v1.3/markers/n/start.png",
+            imageSize: new AMap.Size(25, 34),
+          })
+          const startingMarker = new AMap.Marker({
+            icon: startIcon,
+            position: result.locations[0],
+            offset: new AMap.Pixel(-10, -34)
+          })
+          startingMarker.setMap(that.mapDemo)
+        }
+      })
+      AMap.convertFrom(points[points.length -1],'gps',  function (status,result) {
+          if(result.info == 'ok') {
+            const endIcon = new AMap.Icon({
+          // size: (60,60),
+              size: new AMap.Size(25, 34),
+              image: "https://webapi.amap.com/theme/v1.3/markers/n/end.png",
+              imageSize: new AMap.Size(25, 34),
+            })
+            const destinationMarker = new AMap.Marker({
+              icon: endIcon,
+              position: result.locations[0],
+              offset: new AMap.Pixel(-10, -34)
+            })
+            destinationMarker.setMap(that.mapDemo)
+          }
+        })
         if(errorPoint.length > 0){
           for(let point in errorPoint){
             let marker = new AMap.Marker({
@@ -76,8 +111,10 @@
           }
         }
         const numMAX = 39
+        console.log(points);
         let time = Math.ceil(points.length/numMAX)
         // console.log(JSON.parse(JSON.stringify(points)));
+        that.paths = []
         for( let i=1; i<=time; i++){
           let segPoint = []
           for(let j=(i-1)*numMAX; j <= i*numMAX ;j++){
@@ -88,6 +125,7 @@
           // console.log(JSON.parse(JSON.stringify(points)));
           AMap.convertFrom(segPoint,'gps',  function (status,result) {
             if(result.info == 'ok') {
+              that.paths.push(...result.locations)
               // console.log(JSON.parse(JSON.stringify(result.locations)));
               let polyLine = new AMap.Polyline({
                 path: result.locations,
@@ -107,6 +145,50 @@
             }
           })
         }
+        setTimeout(() => {
+          console.log(that.paths);
+          console.log("执行了");
+          // that.mapDemo.plugin("AMap.DragRoute", function() {
+          //   let route = new AMap.DragRoute(that.mapDemo, that.paths, AMap.DrivingPolicy.LEAST_TIME,{
+          //     midMarkerOptions:{visible:false}
+          //   }); 
+          //   route.search(); 
+          //   console.log(route.getWays());
+          //   console.log(route.getRoute());
+          // })
+          // AMapUI.load(['ui/misc/PathSimplifier'], function(PathSimplifier){
+          //   if (!PathSimplifier.supportCanvas) {
+          //     alert('当前环境不支持 Canvas！');
+          //     return;
+          //   }
+          //   const pathSimplifierIns = new PathSimplifier({
+          //     zIndex: 100,
+          //     map: that.mapDemo, //所属的地图实例
+          //     getPath: function(pathData, pathIndex) {
+          //       //返回轨迹数据中的节点坐标信息，[AMap.LngLat, AMap.LngLat...] 或者 [[lng|number,lat|number],...]
+          //       return pathData.path;
+          //     },
+          //     renderOptions: {
+          //       //轨迹线的样式
+          //       pathLineStyle: {
+          //         strokeStyle: 'red',
+          //         lineWidth: 6,
+          //         dirArrowStyle: true
+          //       }
+          //     }
+          //   });
+          //   pathSimplifierIns.setData([{
+          //     name: '轨迹0',
+          //     path: that.paths
+          //   }]);
+          //   var navg0 = pathSimplifierIns.createPathNavigator(0, //关联第1条轨迹
+          //     {
+          //       loop: true, //循环播放
+          //       speed: 10000
+          //     });
+          //   navg0.start();
+          // })
+        }, 2000);
       }
     }
   }

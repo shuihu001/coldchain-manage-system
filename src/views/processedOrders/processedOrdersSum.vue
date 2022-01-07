@@ -13,19 +13,30 @@
                 <el-button type="primary" icon="el-icon-search" @click="handleSearch">搜索</el-button>
             </div>
           <one-order
-            v-for="oneOrder in orderData"
+            v-for="oneOrder in showOrderData"
             :one-order="oneOrder"
             :key="oneOrder.id"
             @detailSearch = "detailSearch(oneOrder)"
           >
           </one-order>
+          <div>
+            <el-pagination
+                @size-change="handleSizeChange"
+                @current-change="handleCurrentChange"
+                :current-page="currentPage"
+                :page-sizes="[10, 20, 50, 100]"
+                :page-size="pageSize"
+                layout="total, sizes, prev, pager, next"
+                :total="orderData.length">
+            </el-pagination>
+          </div>
         </div>
     </div>
 </template>
 
 <script>
 import oneOrder from '../../components/content/oneOrder'
-import { getOrders, getDriver } from "../../network/requestDatas";
+import { getOrders, getDriver, getOrdersIncludeDriverName } from "../../network/requestDatas";
 export default {
     name: 'processedOrdersSum',
     data() {
@@ -45,48 +56,66 @@ export default {
             idx: -1,
             id: -1,
           orderData:[],
-          driverInfo:[]
+          showOrderData: [],
+          driverInfo:[],
+          currentPage: 1,
+          pageSize: 10,
         };
     },
     components: {
         'one-order': oneOrder,
     },
     created() {
-      this.getProcessedOrderData(5)
+      this.getProcessedOrderData(this.$store.state.userName, 5)
       // this.getDriverInfo()
     },
     methods: {
         detailSearch(order) {
-          let newOrder = JSON.stringify(order)
             this.$router.push({
               path:'/processedOrdersDetail',
               query:{
-                order:newOrder
+                order: JSON.stringify(order)
               }
             })
           // this.$router.push('/processedOrdersDetail'+this.orderData[0].id)
         },
-        // 获取 easy-mock 的模拟数据
-        // getData() {
-        //     fetchData(this.query).then(res => {
-        //         console.log(res);
-        //         this.tableData = res.list;
-        //         this.pageTotal = res.pageTotal || 50;
-        //     }).catch(err =>{
-        //       console.log(err);
-        //     });
-        // },
-      getProcessedOrderData(completeState){
-          console.log(completeState);
-        getOrders(completeState).then(res =>{
-          if (this.query.name !== ''){
-            this.orderData = res.data.filter(item => item.id.toString().match(this.query.name) || item.starting.match(this.query.name) || item.destination.match(this.query.name)).reverse();
-          }else {
-            this.orderData = res.data.reverse()
-          }
-        }).catch(err => {
-          console.log(err);
-        })
+      getProcessedOrderData(companyId, completeState){
+          console.log(companyId);
+        if(this.$store.state.userKind == 4){
+            getOrders(companyId, completeState).then(res =>{
+                console.log(res);
+                console.log(res.data);
+            if (this.query.name !== ''){
+                this.orderData = res.data.filter(item => item.id.toString().match(this.query.name) || item.starting.match(this.query.name) || item.destination.match(this.query.name)).reverse();
+            }else {
+                this.orderData = res.data.reverse()
+            }
+            this.showOrderData = this.orderData.slice((this.currentPage-1)*this.pageSize,this.currentPage*this.pageSize)
+            }).catch(err => {
+                console.log(err);
+            })
+        }else{
+            getOrdersIncludeDriverName(companyId, completeState).then(res =>{
+                console.log(res);
+                console.log(res.data);
+            if (this.query.name !== ''){
+                this.orderData = res.data.filter(item => item.id.toString().match(this.query.name) || item.starting.match(this.query.name) || item.destination.match(this.query.name)).reverse();
+            }else {
+                this.orderData = res.data.reverse()
+            }
+            this.showOrderData = this.orderData.slice((this.currentPage-1)*this.pageSize,this.currentPage*this.pageSize)
+            }).catch(err => {
+                console.log(err);
+            })
+        }
+      },
+      handleSizeChange(val){
+          this.pageSize = val
+          this.showOrderData = this.orderData.slice((this.currentPage-1)*this.pageSize,this.currentPage*this.pageSize)
+      },
+      handleCurrentChange(val){
+          this.currentPage = val
+          this.showOrderData = this.orderData.slice((this.currentPage-1)*this.pageSize,this.currentPage*this.pageSize)
       },
       // getDriverInfo(){
       //   getDriver().then(res => {
@@ -139,10 +168,6 @@ export default {
             this.$set(this.tableData, this.idx, this.form);
         },
         // 分页导航
-        handlePageChange(val) {
-            this.$set(this.query, 'pageIndex', val);
-            this.getData();
-        }
     }
 };
 </script>
@@ -154,7 +179,11 @@ export default {
     justify-content: center;
     flex-direction: column;
 }
-
+/* .pagination{
+    margin-top: 20px;
+    position: relative;
+    left: 300px;
+} */
 .handle-box {
     margin-bottom: 20px;
 }

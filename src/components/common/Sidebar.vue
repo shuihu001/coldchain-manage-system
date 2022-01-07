@@ -10,7 +10,7 @@
             unique-opened
             router
         >
-            <template v-for="item in items">
+            <template v-for="item in sideRoutes">
                 <template v-if="item.subs">
                     <el-submenu :index="item.index" :key="item.index">
                         <template slot="title">
@@ -176,6 +176,90 @@ export default {
     computed: {
         onRoutes() {
             return this.$route.path.replace('/', '');
+        },
+        sideRoutes() {
+            let sideRoutes = []
+            if(this.$store.state.userKind == 2){
+                sideRoutes = [
+                {
+                    icon: 'el-icon-lx-home',
+                    index: 'goverHomePage',
+                    title: '首页'
+                },
+                {
+                    icon: 'el-icon-lx-cascades',
+                    index: 'processingOrdersSum',
+                    title: '执行中订单汇总'
+                },
+                {
+                    icon: 'el-icon-lx-cascades',
+                    index: 'errorOrdersSum',
+                    title: '异常订单汇总'
+                },
+                {
+                    icon: 'el-icon-lx-cascades',
+                    index: 'processedOrdersSum',
+                    title: '历史订单汇总'
+                },
+                {
+                    icon: 'el-icon-lx-cascades',
+                    index: 'accountManage',
+                    title: '账号管理'
+                },
+                {
+                    icon: 'el-icon-lx-cascades',
+                    index: 'profile',
+                    title: '个人中心'
+                },
+            ]
+            }else if(this.$store.state.userKind == 3){
+                sideRoutes = [
+                {
+                    icon: 'el-icon-lx-cascades',
+                    index: 'processingOrdersSum',
+                    title: '执行中订单汇总'
+                },
+                {
+                    icon: 'el-icon-lx-cascades',
+                    index: 'profile',
+                    title: '个人中心'
+                },
+            ]
+            }else if(this.$store.state.userKind == 4){
+                sideRoutes = [
+                {
+                    icon: 'el-icon-lx-home',
+                    index: 'companyHomePage',
+                    title: '首页'
+                },
+                {
+                    icon: 'el-icon-lx-cascades',
+                    index: 'processingOrdersSum',
+                    title: '执行中订单汇总'
+                },
+                {
+                    icon: 'el-icon-lx-cascades',
+                    index: 'errorOrdersSum',
+                    title: '异常订单汇总'
+                },
+                {
+                    icon: 'el-icon-lx-cascades',
+                    index: 'processedOrdersSum',
+                    title: '历史订单汇总'
+                },
+                {
+                    icon: 'el-icon-lx-cascades',
+                    index: 'accountManage',
+                    title: '账号管理'
+                },
+                {
+                    icon: 'el-icon-lx-cascades',
+                    index: 'profile',
+                    title: '个人中心'
+                },
+            ]
+            }
+            return sideRoutes
         }
     },
     created() {

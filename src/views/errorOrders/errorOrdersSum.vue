@@ -13,13 +13,23 @@
                 <el-button type="primary" icon="el-icon-search" @click="handleSearch">搜索</el-button>
             </div>
             <one-order
-              v-for="oneOrder in orderData"
+              v-for="oneOrder in showOrderData"
               :one-order="oneOrder"
               :key="oneOrder.id"
               @detailSearch = "detailSearch(oneOrder)"
             >
             </one-order>
-<!--          <error-item v-for="order in orderData" :order-data="order" :key="order.id"></error-item>-->
+            <div>
+                <el-pagination
+                    @size-change="handleSizeChange"
+                    @current-change="handleCurrentChange"
+                    :current-page="currentPage"
+                    :page-sizes="[10, 20, 50, 100]"
+                    :page-size="pageSize"
+                    layout="total, sizes, prev, pager, next"
+                    :total="orderData.length">
+                </el-pagination>
+            </div>
         </div>
     </div>
 </template>
@@ -27,7 +37,7 @@
 <script>
 import oneOrder from '../../components/content/oneOrder'
 // import errorItem from "./errorItem";
-import { getErrorOrders, getOrders } from "../../network/requestDatas";
+import { getErrorOrders, getOrders, getOrdersIncludeDriverName } from "../../network/requestDatas";
 // import {fetchData, getDriver, getErrorOrders, getOrders} from '../../api/index';
 export default {
     name: 'errorOrdersSum',
@@ -48,6 +58,9 @@ export default {
             idx: -1,
             id: -1,
           orderData:[],
+          showOrderData: [],
+          currentPage: 1,
+          pageSize: 10,
         };
     },
     components: {
@@ -56,17 +69,16 @@ export default {
     },
     created() {
         // this.getData();
-        this.getErrorOrderDatas()
+        this.getErrorOrderDatas(this.$store.state.userName, 5)
       // this.getOrderData()
       // this.getDriverInfo()
     },
     methods: {
         detailSearch(order) {
-          let newOrder = JSON.stringify(order)
             this.$router.push({
               path:'/errorOrdersDetail',
               query:{
-                order:newOrder
+                order: JSON.stringify(order)
               }
             })
           // this.$router.push('/errorOrdersDetail'+this.orderData[0].id)
@@ -79,42 +91,44 @@ export default {
                 this.pageTotal = res.pageTotal || 50;
             });
         },
-      // getOrderData(){
-      //   getOrders().then(res =>{
-      //     console.log(res.list);
-      //     this.orderData.push(...res.list)
-      //     console.log(this.orderData[0]);
-      //   }).catch()
-      // },
-      // getDriverInfo(){
-      //   getDriver().then(res => {
-      //     console.log(res.list);
-      //     this.driverInfo.push(...res.list)
-      //   }).catch(err => {
-      //     console.log(err);
-      //   })
-      // },
-      getErrorOrderDatas(){
-          getOrders(5).then(res=> {
-            if (this.query.name !== ''){
-              this.orderData = res.data.filter(item => item.id.toString().match(this.query.name) || item.starting.match(this.query.name) || item.destination.match(this.query.name)).reverse()
-            }else {
-                this.orderData = res.data.reverse()
-            }
-            this.orderData = this.orderData.filter(item => item.alert == 1 || item.alert == 2 || item.alert == 3 )
-          }).catch()
+      getErrorOrderDatas(companyId, completeState){
+          if(this.$store.state.userKind == 4){
+              getOrders(companyId, completeState).then(res=> {
+                console.log(res.data);
+                if (this.query.name !== ''){
+                this.orderData = res.data.filter(item => item.id.toString().match(this.query.name) || item.starting.match(this.query.name) || item.destination.match(this.query.name)).reverse()
+                }else {
+                    this.orderData = res.data.reverse()
+                }
+                console.log(this.orderData);
+                this.orderData = this.orderData.filter(item => item.alert == 1 || item.alert == 2 || item.alert == 3 )
+                console.log(this.orderData);
+                this.showOrderData = this.orderData.slice((this.currentPage-1)*this.pageSize,this.currentPage*this.pageSize)
+            }).catch()
+          }else{
+              getOrdersIncludeDriverName(companyId, completeState).then(res=> {
+                console.log(res.data);
+                if (this.query.name !== ''){
+                this.orderData = res.data.filter(item => item.id.toString().match(this.query.name) || item.starting.match(this.query.name) || item.destination.match(this.query.name)).reverse()
+                }else {
+                    this.orderData = res.data.reverse()
+                }
+                console.log(this.orderData);
+                this.orderData = this.orderData.filter(item => item.alert == 1 || item.alert == 2 || item.alert == 3 )
+                console.log(this.orderData);
+                this.showOrderData = this.orderData.slice((this.currentPage-1)*this.pageSize,this.currentPage*this.pageSize)
+                }).catch()
+          }
+          
       },
-        // getErrorOrderDatas(){
-        //   getErrorOrders().then(res => {
-        //     // console.log(res);
-        //     this.orderData.push(...res.data)
-        //     console.log(res.data);
-        //     if (this.query.name !== ''){
-        //       this.orderData = this.orderData.filter(item => item.id.toString().match(this.query.name) || item.starting.match(this.query.name) || item.destination.match(this.query.name));
-        //     }
-        //     // console.log(this.orderData[0]);
-        //   }).catch()
-        // },
+      handleSizeChange(val){
+          this.pageSize = val
+          this.showOrderData = this.orderData.slice((this.currentPage-1)*this.pageSize,this.currentPage*this.pageSize)
+      },
+      handleCurrentChange(val){
+          this.currentPage = val
+          this.showOrderData = this.orderData.slice((this.currentPage-1)*this.pageSize,this.currentPage*this.pageSize)
+      },
         // 触发搜索按钮
         handleSearch() {
             // this.$set(this.query, 'pageIndex', 1);
@@ -159,10 +173,6 @@ export default {
             this.$set(this.tableData, this.idx, this.form);
         },
         // 分页导航
-        handlePageChange(val) {
-            this.$set(this.query, 'pageIndex', val);
-            this.getData();
-        }
     }
 };
 </script>

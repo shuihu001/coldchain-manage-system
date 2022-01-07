@@ -3,15 +3,19 @@
         <div class="ms-login">
             <div class="ms-title">后台管理系统</div>
             <el-form :model="param" :rules="rules" ref="login" label-width="0px" class="ms-content">
-                <el-form-item prop="username">
-                    <el-input v-model="param.username" placeholder="username">
+                <el-form-item prop="creatorId">
+                    <el-input
+                        v-model="param.creatorId"
+                        placeholder="请输入账号"
+                        @keyup.enter.native="submitForm()"
+                    >
                         <el-button slot="prepend" icon="el-icon-lx-people"></el-button>
                     </el-input>
                 </el-form-item>
                 <el-form-item prop="password">
                     <el-input
                         type="password"
-                        placeholder="password"
+                        placeholder="请输入密码"
                         v-model="param.password"
                         @keyup.enter.native="submitForm()"
                     >
@@ -21,36 +25,62 @@
                 <div class="login-btn">
                     <el-button type="primary" @click="submitForm()">登录</el-button>
                 </div>
-                <p class="login-tips">Tips : 用户名和密码随便填。</p>
+                <!-- <p class="login-tips">Tips : 用户名和密码随便填。</p> -->
             </el-form>
         </div>
     </div>
 </template>
 
 <script>
+import Vue from 'vue'
+import { login } from '../../network/requestDatas'
 export default {
     data: function() {
         return {
             param: {
-                username: 'admin',
-                password: '123123',
+                creatorId: '',
+                password: '',
             },
             rules: {
-                username: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
+                creatorId: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
                 password: [{ required: true, message: '请输入密码', trigger: 'blur' }],
             },
         };
+    },
+    created () {
+        if(localStorage.getItem('ms_username')){
+            Vue.set(this.param, "creatorId", localStorage.getItem('ms_username'))
+        }
     },
     methods: {
         submitForm() {
             this.$refs.login.validate(valid => {
                 if (valid) {
-                    this.$message.success('登录成功');
-                    localStorage.setItem('ms_username', this.param.username);
-                    this.$router.push('/homepage');
+                    console.log(JSON.parse(JSON.stringify(this.param)));
+                    login(this.param).then(res => {
+                        if(res.code === 0){
+                            console.log(res);
+                            console.log(this.param.password);
+                            this.$store.commit("setUserName", this.param.creatorId)
+                            this.$store.commit("setPassword", this.param.password)
+                            this.$store.commit("setUserKind", res.data.kind)
+                            console.log(this.$store.state);
+                            localStorage.setItem('ms_username', this.param.creatorId);
+                            localStorage.setItem('token', this.param.creatorId);
+                            if(res.data.kind === 2){
+                                this.$router.push('/goverHomePage')
+                            }else if(res.data.kind === 3){
+                                this.$router.push('/processingOrdersSum')
+                            }else if(res.data.kind === 4){
+                                this.$router.push('/companyHomePage')
+                            }
+                            this.$message.success('登录成功');
+                        }else if (res.code === 2001){
+                            this.$message.error('账号或密码错误');
+                        }
+                    })
                 } else {
                     this.$message.error('请输入账号和密码');
-                    console.log('error submit!!');
                     return false;
                 }
             });

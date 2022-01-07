@@ -3,7 +3,7 @@ import Router from 'vue-router';
 
 Vue.use(Router);
 
-export default new Router({
+const routes = new Router({
     routes: [
         {
             path: '/',
@@ -12,16 +12,24 @@ export default new Router({
         },
         {
             path: '/login',
-            // component: () => import(/* webpackChunkName: "login" */ '../components/page/Login.vue'),
-            // meta: { title: '登录' }
-            component: () => import(/* webpackChunkName: "login" */ '../views/login.vue'),
+            component: () => import('../views/login.vue'),
             meta: { title: '登录' }
         },
         {
             path: '/',
-            component: () => import(/* webpackChunkName: "home" */ '../views/main.vue'),
+            component: () => import('../views/main.vue'),
             meta: { title: '自述文件' },
             children: [
+                {
+                    path: '/companyHomePage',
+                    component: () => import('../views/homePage/companyHomePage.vue'),
+                    meta: { title: '首页' }
+                },
+                {
+                    path: '/goverHomePage',
+                    component: () => import('../views/homePage/goverHomePage.vue'),
+                    meta: { title: '首页' }
+                },
                 {
                     path: '/homepage',
                     component: () => import('../views/homePage.vue'),
@@ -34,7 +42,6 @@ export default new Router({
                 },
                 {
                     path: '/processingOrdersDetail',
-                    // path: '/processingOrdersDetail',
                     component: () => import('../views/processingOrders/processingOrdersDetail.vue'),
                     meta: { title: '执行中订单详情' }
                 },
@@ -62,6 +69,16 @@ export default new Router({
                     path: '/processedOrdersDetail',
                     component: () => import('../views/processedOrders/processedOrdersDetail.vue'),
                     meta: { title: '历史订单详情' }
+                },
+                {
+                    path: '/accountManage',
+                    component: () => import('../views/accountManage/accountManage.vue'),
+                    meta: { title: "账号管理" }
+                },
+                {
+                    path: '/profile',
+                    component: () => import('../views/profile/profile.vue'),
+                    meta: { title: "个人中心"}
                 },
                 // {
                 //     path: '/driverCheck',
@@ -165,4 +182,13 @@ export default new Router({
             redirect: '/404'
         }
     ]
-});
+})
+
+routes.beforeEach((to, from, next) => {
+    if(to.path == '/login') return next()
+    const tokenStr = localStorage.getItem("token")
+    if(!tokenStr) return next('/login')
+    next()
+})
+
+export default routes

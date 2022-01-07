@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import App from './App.vue';
 import router from './router';
+import store from './store';
 import ElementUI from 'element-ui';
 import VueI18n from 'vue-i18n';
 import { messages } from './components/common/i18n';
@@ -12,7 +13,9 @@ import 'babel-polyfill';
 // import echarts from 'echarts/lib/echarts'; // 引入echarts
 import echarts from 'echarts'; // 引入echarts
 
+import dataV from '@jiaminghi/data-view'
 
+Vue.use(dataV)
 // import VueVideoPlayer from 'vue-video-player'
 // import VideoPlayer from 'vue-video-player'
 // Vue.use(VideoPlayer)
@@ -68,6 +71,7 @@ router.beforeEach((to, from, next) => {
 
 new Vue({
     router,
+    store,
     i18n,
     render: h => h(App)
 }).$mount('#app');
